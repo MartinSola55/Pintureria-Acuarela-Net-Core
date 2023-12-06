@@ -62,11 +62,6 @@ namespace Pinturería_Acuarela.Controllers
                 NewViewModel viewModel = new()
                 {
                     Products = products.ToList(),
-                    Brands = _workContainer.Brand.GetDropDownList(),
-                    Categories = _workContainer.Category.GetDropDownList(),
-                    Subcategories = _workContainer.Subcategory.GetDropDownList(),
-                    Capacities = _workContainer.Capacity.GetDropDownList(),
-                    Colors = _workContainer.Color.GetDropDownList(),
                     CreateViewModel = new Sale()
                 };
                 return View(viewModel);

@@ -57,10 +57,12 @@ namespace Pinturería_Acuarela.Controllers
                     product.CreateViewModel.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.Product.Add(product.CreateViewModel);
                     _workContainer.Save();
+
+                    Product newProduct = _workContainer.Product.GetFirstOrDefault(p => product.CreateViewModel.ID.Equals(p.ID), includeProperties: "Category, Brand");
                     return Json(new
                     {
                         success = true,
-                        data = product.CreateViewModel,
+                        data = newProduct,
                         message = "El producto se creó correctamente",
                     });
                 }

@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pinturería_Acuarela.Data.Repository.IRepository;
 using Pinturería_Acuarela.Models;
 
 namespace Pinturería_Acuarela.Data.Repository
 {
-    public class ApplicationUserRepository(ApplicationDbContext db) : Repository<ApplicationUser>(db), IApplicationUserRepository
+    public class ProductOrderRepository(ApplicationDbContext db) : Repository<ProductOrder>(db), IProductOrderRepository
     {
         private readonly ApplicationDbContext _db = db;
-        public IdentityRole GetRole(string userID)
+
+        public ProductOrder GetOne(long orderID, long productID)
         {
-            return _db.Roles.FirstOrDefault(x => x.Id.Equals(_db.UserRoles.FirstOrDefault(x => x.UserId.Equals(userID)).RoleId));
+            return _db.ProductsOrder.Where(x => x.OrderID == orderID && x.ProductID == productID).First();
         }
     }
 }

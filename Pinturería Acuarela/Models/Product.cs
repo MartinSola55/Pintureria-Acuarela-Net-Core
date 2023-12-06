@@ -12,6 +12,7 @@ public partial class Product
     public long ID { get; set; }
 
     [Required(ErrorMessage = "Debes completar con una descripción")]
+    [DisplayName("Descripción")]
     [StringLength(255, ErrorMessage = "Ingresa una descripción menor de 255 caracteres")]
     public string Description { get; set; } = null!;
 

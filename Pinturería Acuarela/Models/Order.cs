@@ -11,7 +11,7 @@ public partial class Order
     public long ID { get; set; }
 
     [Display(Name = "Vendedor")]
-    public long UserID { get; set; }
+    public string UserID { get; set; } = null!;
 
 
     [Display(Name = "Estado")]
@@ -22,4 +22,8 @@ public partial class Order
 
     public DateTime CreatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
+
+    public virtual ApplicationUser User { get; set; } = null!;
+
+    public virtual ICollection<ProductOrder> Products { get; set; } = null!;
 }

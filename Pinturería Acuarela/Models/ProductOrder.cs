@@ -25,7 +25,5 @@ public partial class ProductOrder
 
     public virtual Business Business { get; set; } = null!;
 
-    public virtual Order Order { get; set; } = null!;
-
     public virtual Product Product { get; set; } = null!;
 }

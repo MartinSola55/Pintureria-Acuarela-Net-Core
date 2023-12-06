@@ -25,6 +25,7 @@ namespace Pinturería_Acuarela.Data.Repository
             ProductSale = new ProductSaleRepository(_db);
             Business = new BusinessRepository(_db);
             Order = new OrderRepository(_db);
+            ProductOrder = new ProductOrderRepository(_db);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
@@ -49,6 +50,7 @@ namespace Pinturería_Acuarela.Data.Repository
         public IProductSaleRepository ProductSale { get; private set; }
         public IBusinessRepository Business { get; private set; }
         public IOrderRepository Order { get; private set; }
+        public IProductOrderRepository ProductOrder { get; private set; }
 
 
         public void BeginTransaction()

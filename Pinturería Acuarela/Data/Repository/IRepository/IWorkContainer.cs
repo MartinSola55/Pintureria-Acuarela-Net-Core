@@ -20,6 +20,7 @@ namespace Pinturería_Acuarela.Data.Repository.IRepository
         IProductSaleRepository ProductSale { get; }
         IBusinessRepository Business { get; }
         IOrderRepository Order { get; }
+        IProductOrderRepository ProductOrder { get; }
 
         void BeginTransaction();
         void Commit();
