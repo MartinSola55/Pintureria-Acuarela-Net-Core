@@ -1,0 +1,280 @@
+﻿@model Pinturería_Acuarela.Models.ViewModels.Products.IndexViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Productos";
+}
+
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- This is data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Productos</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Productos</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <!-- Modal -->
+    <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div id="formContainer" class="modal-dialog">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="Products" asp-action="Create" id="form-create" autocomplete="off">
+                <input type="hidden" name="CreateViewModel.ID" value="" />
+                @Html.AntiForgeryToken()
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="modalTitle" class="modal-title"></h4>
+                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-column">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.Description" class="mb-0 required"></label>
+                                        <input asp-for="CreateViewModel.Description" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.Description" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.InternalCode" class="mb-0 required"></label>
+                                        <input asp-for="CreateViewModel.InternalCode" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.InternalCode" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.BrandID" class="mb-0 required"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.BrandID, Model.Brands, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.BrandID" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.CategoryID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.CategoryID, Model.Categories, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.CategoryID" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.SubcategoryID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.SubcategoryID, Model.Subcategories, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.SubcategoryID" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.CapacityID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.CapacityID, Model.Capacities, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.CapacityID" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.ColorID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.ColorID, Model.Colors, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.ColorID" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Modal -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-md-row flex-column justify-content-between">
+                        <h2 class="card-title">Listado de productos</h2>
+                        <button id="btnAddProduct" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right ml-2" data-toggle="modal" data-target="#modalCreate">Agregar producto</button>
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="DataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Marca</th>
+                                    <th>Categoría</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.Products)
+                                {
+                                    <tr data-id="@item.ID">
+                                        <td>@Html.DisplayFor(c => item.InternalCode)</td>
+                                        <td>@Html.DisplayFor(c => item.Description)</td>
+                                        <td>@Html.DisplayFor(c => item.Brand.Name)</td>
+                                        <td>@(item.CategoryID != null ? item.Category.Description: "-")</td>
+                                        <td class='d-flex flex-row justify-content-center'>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="Products" asp-action="SoftDelete">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fillTable(item) {
+        let content = `
+            <tr data-id='${item.id}'>
+                <td>${item.internalCode}</td>
+                <td>${item.description}</td>
+                <td>${item.brand.name}</td>
+                <td>${item.categoryID != null ? item.category.description : "-"}</td>
+                <td class='d-flex flex-row justify-content-center'>
+                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                    <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
+                </td>
+            </tr>`;
+        $('#DataTable').DataTable().row.add($(content)).draw();
+    }
+
+    function removeFromTable(id) {
+        $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+    }
+
+    function deleteObj(id) {
+        Swal.fire({
+            title: "¿Seguro deseas eliminar este producto?",
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            }
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm("delete");
+            }
+        });
+    }
+
+    function sendForm(action) {
+        let form = document.getElementById(`form-${action}`);
+
+        let errors = $(".input-validation-error");
+
+        if (errors.length === 0) {
+            // Enviar solicitud AJAX
+            $.ajax({
+                url: $(form).attr('action'), // Utiliza la ruta del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
+                data: $(form).serialize(), // Utiliza los datos del formulario
+                success: function (response) {
+                    $("#btnCloseModalCreate").click();
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                    if (action === 'create') {
+                        fillTable(response.data);
+                    } else if (action === 'edit') {
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
+                    } else {
+                        removeFromTable(response.data);
+                    }
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                }
+            });
+        }
+    }
+</script>
+
+<script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
+
+    $("#btnAddProduct").on("click", function () {
+        $("#modalTitle").text("Agregar producto");
+        $("#formContainer form").attr("action", "/Products/Create");
+        $("#formContainer form").attr("id", "form-create");
+        $("#formContainer form input:not([type='hidden']").val("");
+        $("#formContainer form select").val("");
+        $("input[name='CreateViewModel.ID']").prop("disabled", true);
+        $("#btnSendModal").text("Agregar");
+    });
+
+    function edit(entity) {
+        $("#formContainer form input:not([type='hidden']").val("");
+        $("input[name='CreateViewModel.ID']").val(entity.id);
+        $("input[name='CreateViewModel.ID']").prop("disabled", false);
+
+        $("#modalTitle").text("Editar producto");
+        $("input[name='CreateViewModel.Description']").val(entity.description);
+        $("input[name='CreateViewModel.InternalCode']").val(entity.internalCode);
+        $("select[name='CreateViewModel.BrandID']").val(entity.brandID);
+        $("select[name='CreateViewModel.CategoryID']").val(entity.categoryID);
+        $("select[name='CreateViewModel.SubcategoryID']").val(entity.subcategoryID);
+        $("select[name='CreateViewModel.CapacityID']").val(entity.capacityID);
+        $("select[name='CreateViewModel.ColorID']").val(entity.colorID);
+
+        $("#formContainer form").attr("action", "/Products/Edit");
+        $("#formContainer form").attr("id", "form-edit");
+        $("#btnSendModal").text("Confirmar");
+    }
+
+    $('#DataTable').DataTable({
+        "language": {
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
+            "sInfoFiltered": "(filtrado de _MAX_ productos en total)",
+            "emptyTable": 'No hay productos que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ productos",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior",
+            },
+        },
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

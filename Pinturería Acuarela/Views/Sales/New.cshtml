@@ -1,0 +1,339 @@
+﻿@model Pinturería_Acuarela.Models.ViewModels.Sales.NewViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Nueva venta";
+}
+
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- This is data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sales" asp-action="Index">Ventas</a></li>
+                <li class="breadcrumb-item active">Nueva</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <div class="row">
+        <div class="col-12 col-xl-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title mr-2">Seleccione los productos</h2>
+                    <div class="table-responsive m-t-10">
+                        <table id="DataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Marca</th>
+                                    <th>Código</th>
+                                    <th>Stock</th>
+                                    <th class="text-center">Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Products)
+                                {
+                                    <tr data-id="@item.ProductID">
+                                        <td>@item.Product.Description</td>
+                                        <td>@item.Product.Brand.Name</td>
+                                        <td>@item.Product.InternalCode</td>
+                                        <td>@item.Stock</td>
+                                        <td>
+                                            <div class='d-flex flex-row justify-content-center'>
+                                                <button name="btnSale" type='button' class='btn btn-outline-info mr-2' data-entity='@Json.Serialize(item)'><i class="bi bi-plus-lg"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title mr-2">Productos seleccionados</h2>
+                    <div class="table-responsive m-t-10">
+                        <table id="productsSelected" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Marca</th>
+                                    <th>Código</th>
+                                    <th>Stock</th>
+                                    <th>Cantidad</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex flex-row justify-content-end">
+                        <button id="btnSend" type="button" class="btn btn-success waves-effect px-3 py-2" style="display: none;">Vender</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="form-create" method="POST" asp-area="" asp-controller="Sales" asp-action="Create">
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).on("click", "button[name='btnSale']", function () {
+        let entity = $(this).data("entity");
+        Swal.fire({
+            title: 'Ingrese la cantidad:',
+            text: `Stock: ${entity.stock} u.`,
+            input: 'number',
+            inputAttributes: {
+                min: 1,
+                max: entity.stock,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Agregar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            showLoaderOnConfirm: true,
+            inputValidator: (value) => {
+                if (!value || value < 1 || value > entity.stock) {
+                    return 'Por favor, ingrese una cantidad válida';
+                }
+            },
+            preConfirm: (cantidad) => {
+                addToSelectedTable(entity, cantidad);
+                removeFromTable("#DataTable", entity.productID);
+            },
+        });
+    });
+
+    $(document).on("click", "button[name='btnDelete']", function () {
+        let entity = $(this).data("entity");
+        addToProductsTable(entity);
+        removeFromTable("#productsSelected", entity.productID);
+    });
+
+    let paymentMethodsData;
+    let productsData;
+
+    $("#btnSend").on("click", function () {
+        $("#productsSelected").DataTable().rows().every(function () {
+            let row = $(this.node());
+            let price = row.find("td:nth-child(2)").text().replace("$", "").replace(".", "");
+            let quantity = row.find("td:nth-child(4)").text();
+        });
+        Swal.fire({
+            title: '¿Seguro desea realizar la venta?',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            inputValidator: (value) => {
+                if (!value || value < 0 || value > 1000000) {
+                    return 'Por favor, ingrese un monto válido';
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sendForm($("#swal2-input").val());
+            }
+        });
+    });
+
+    function sendForm(amount) {
+        createProductsData();
+        let form = $("#form-create");
+        // Enviar solicitud AJAX
+        $.ajax({
+            url: $(form).attr('action'), // Utiliza la ruta del formulario
+            method: $(form).attr('method'), // Utiliza el método del formulario
+            data: $(form).serialize() + "&" + $.param(productsData), // Utiliza los datos del formulario
+            success: function (response) {
+                Swal.fire({
+                    title: response.message,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#1e88e5',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            },
+            error: function (errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorThrown.responseJSON.title,
+                    text: errorThrown.responseJSON.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+            }
+        });
+    };
+
+    function createPaymentMethodsData(amount) {
+        let paymentMethod = {
+            PaymentMethodID: $("#PaymentMethods").val(),
+            Amount: amount
+        };
+
+        // Crear un objeto que contenga los métodos de pago y sus cantidades
+        paymentMethodsData = {
+            CreateViewModel: {
+                PaymentMethods: [paymentMethod]
+            }
+        };
+    }
+
+    function createProductsData() {
+        let products = [];
+        $("#productsSelected").DataTable().rows().every(function () {
+            let row = $(this.node());
+            let productID = row.data("id");
+            let quantity = row.data("quantity");
+            let product = {
+                ProductID: productID,
+                Quantity: quantity
+            };
+            products.push(product);
+        });
+
+
+        // Crear un objeto que contenga los métodos de pago y sus cantidades
+        productsData = {
+            CreateViewModel: {
+                Products: products
+            }
+        };
+    }
+
+    function removeFromTable(tableID, rowID) {
+        let table = $(tableID);
+        let row = table.find(`tbody tr[data-id='${rowID}']`);
+        table.DataTable().row(row).remove().draw();
+
+        let rows = $("#productsSelected").DataTable().rows().count();
+        if (rows > 0) {
+            $("#btnSend").show();
+        } else {
+            $("#btnSend").hide();
+        }
+    }
+
+    function addToSelectedTable(entity, cantidad) {
+        let table = $("#productsSelected");
+        let row = $('#DataTable').find(`tbody tr[data-id='${entity.productID}']`);
+        let content = `
+                <tr data-id="${entity.productID}" data-quantity="${cantidad}">
+                <td>${entity.product.description}</td>
+                <td>${entity.product.brand.name}</td>
+                <td>${entity.product.internalCode}</td>
+                <td>${entity.stock}</td>
+                <td>${cantidad}</td>
+                <td>
+                    <div class='d-flex flex-row justify-content-center'>
+                        <button name="btnDelete" type='button' class='btn btn-outline-danger mr-2' data-entity='${JSON.stringify(entity)}'><i class="bi bi-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        table.DataTable().row.add($(content)).draw();
+    }
+
+    function addToProductsTable(entity) {
+        let table = $("#DataTable");
+        let row = $('#productsSelected').find(`tbody tr[data-id='${entity.productID}']`);
+        let content = `
+                <tr data-id="${entity.productID}">
+                <td>${entity.product.description}</td>
+                <td>${entity.product.brand.name}</td>
+                <td>${entity.product.internalCode}</td>
+                <td>${entity.stock}</td>
+                <td>
+                    <div class='d-flex flex-row justify-content-center'>
+                        <button name="btnSale" type='button' class='btn btn-outline-info mr-2' data-entity='${JSON.stringify(entity)}'><i class="bi bi-plus-lg"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        table.DataTable().row.add($(content)).draw();
+    }
+</script>
+
+<script>
+    $('#DataTable').DataTable({
+        "language": {
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
+            "sInfoFiltered": "(filtrado de _MAX_ productos en total)",
+            "emptyTable": 'No hay productos que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ productos",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior",
+            },
+        },
+    });
+
+    $('#productsSelected').DataTable({
+        "language": {
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
+            "sInfoFiltered": "(filtrado de _MAX_ productos en total)",
+            "emptyTable": 'No hay productos elegidos',
+            "sLengthMenu": "Mostrar _MENU_ productos",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior",
+            },
+        },
+        paging: false,
+        searching: false,
+        ordering: false,
+        info: false
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
