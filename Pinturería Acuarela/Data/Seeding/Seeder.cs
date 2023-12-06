@@ -6,20 +6,13 @@ using System.Reflection.Emit;
 
 namespace Pinturería_Acuarela.Data.Seeding
 {
-    public class Seeder : ISeeder
+    public class Seeder(ApplicationDbContext db, IConfiguration config, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : ISeeder
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IConfiguration _config;
-        private readonly UserManager<IdentityUser> _userManager;
-        //private readonly UserManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _db = db;
+        private readonly IConfiguration _config = config;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-        public Seeder(ApplicationDbContext db, IConfiguration config, UserManager<IdentityUser> userManager/*, UserManager<IdentityRole> roleManager*/)
-        {
-            _db = db;
-            _config = config;
-            _userManager = userManager;
-            //_roleManager = roleManager;
-        }
         public void Seed()
         {
             try
@@ -28,28 +21,31 @@ namespace Pinturería_Acuarela.Data.Seeding
                 {
                     _db.Database.Migrate();
                 }
+
+                if (_db.Roles.Any(x => x.Name == Constants.Admin)) return;
+
+                // Crear roles
+                _roleManager.CreateAsync(new IdentityRole(Constants.Admin)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(Constants.Employee)).GetAwaiter().GetResult();
+
+                // Crear usuarios
+                ApplicationUser user = new()
+                {
+                    UserName = _config["User:Name"],
+                    Email = _config["User:Email"],
+                    EmailConfirmed = true,
+                    BusinessID = 1,
+                };
+                _userManager.CreateAsync(user, _config["User:Password"]).GetAwaiter().GetResult();
+
+                ApplicationUser newUser = _db.User.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefault();
+
+                _userManager.AddToRoleAsync(newUser, Constants.Admin).GetAwaiter().GetResult();
             }
             catch (Exception)
             {
                 throw;
             }
-
-            // Crear roles
-            //_roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
-
-            // Crear usuarios
-            _userManager.CreateAsync(new ApplicationUser
-            {
-                UserName = _config["User:Name"],
-                Email = _config["User:Email"],
-                EmailConfirmed = true,
-                BusinessID = 1,
-                
-            }, 
-            _config["User:Password"]).GetAwaiter().GetResult();
-
-            //IdentityUser user = _db.Users.Where(x => x.Email == "email").FirstOrDefault();
-            //_userManager.AddToRoleAsync(user, "Admin").GetAwaiter().GetResult();
         }
     }
 }

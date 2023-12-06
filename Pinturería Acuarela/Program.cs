@@ -4,6 +4,7 @@ using Pinturería_Acuarela.Data;
 using Pinturería_Acuarela.Data.Repository;
 using Pinturería_Acuarela.Data.Repository.IRepository;
 using Pinturería_Acuarela.Data.Seeding;
+using Pinturería_Acuarela.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI();
 builder.Services.AddControllersWithViews();
 
 // Agregar work container
@@ -63,9 +65,7 @@ app.Run();
 // Metodo Seed()
 void Seed()
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
-        dbSeeder.Seed();
-    }
+    using var scope = app.Services.CreateScope();
+    var dbSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+    dbSeeder.Seed();
 }
