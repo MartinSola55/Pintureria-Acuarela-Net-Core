@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Pinturería_Acuarela.Data.Repository.IRepository;
 using Pinturería_Acuarela.Models;
 
@@ -29,6 +30,11 @@ namespace Pinturería_Acuarela.Data.Repository
         public int GetTotalProducts(long businessID)
         {
             return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID)).Count();
+        }
+
+        public IEnumerable<ProductBusiness> GetProducts(long id)
+        {
+            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(id)).Include(x => x.Product).Include(x => x.Product.Brand).Include(x => x.Product.Category).Include(x => x.Product.Capacity);
         }
     }
 }

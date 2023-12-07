@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Pinturería_Acuarela.Data.Repository.IRepository;
 using Pinturería_Acuarela.Models;
 
@@ -41,7 +42,7 @@ namespace Pinturería_Acuarela.Data.Repository
 
         public ProductBusiness GetOne(long businessID, long productID)
         {
-            return _db.ProductsBusiness.Where(x => x.BusinessID == businessID && x.ProductID == productID).First();
+            return _db.ProductsBusiness.Where(x => x.BusinessID == businessID && x.ProductID == productID).Include(x => x.Product).Include(x => x.Product.Brand).First();
         }
     }
 }

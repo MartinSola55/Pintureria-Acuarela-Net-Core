@@ -142,7 +142,7 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception e)
             {
                 _workContainer.Rollback();
-                return CustomBadRequest("Intente nuevamente o comuníquese para soporte", e.Message);
+                return CustomBadRequest(title: "Error al editar la venta", message: "Intente nuevamente o comuníquese para soporte", e.Message);
             }
         }
 

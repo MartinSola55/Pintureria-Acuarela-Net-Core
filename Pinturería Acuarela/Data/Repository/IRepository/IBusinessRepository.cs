@@ -13,5 +13,6 @@ namespace Pinturería_Acuarela.Data.Repository.IRepository
         int GetStockAlertProducts(long businessID);
         int GetTotalProducts(long businessID);
         double GetTotalLiters(long businessID);
+        IEnumerable<ProductBusiness> GetProducts(long id);
     }
 }

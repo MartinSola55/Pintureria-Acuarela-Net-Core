@@ -10,11 +10,24 @@ namespace Pinturería_Acuarela.Controllers
     public class BusinessesController(IWorkContainer workContainer) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
+        private BadRequestObjectResult CustomBadRequest(string title, string message, string? error = null)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                title,
+                message,
+                error,
+            });
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View(_workContainer.Business.GetAll());
         }
 
+        [HttpGet]
         public IActionResult Details(long id)
         {
             try
@@ -33,6 +46,71 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception)
             {
                 return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Stock(long id)
+        {
+            try
+            {
+                ProductsViewModel viewModel = new()
+                {
+                    Business = _workContainer.Business.GetOne(id),
+                    Products = _workContainer.Business.GetProducts(id).ToList()
+                };
+                return View("Stock/Products", viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateStock(long businessID, long productID, int stock)
+        {
+            try
+            {
+                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(businessID, productID);
+                if (productBusiness == null) return CustomBadRequest(title: "Error al actualizar el stock del producto", message: "El producto no existe");
+                productBusiness.Stock = stock;
+                _workContainer.ProductBusiness.Update(productBusiness);
+                _workContainer.Save();
+                return Json(new
+                {
+                    success = true,
+                    data = productBusiness,
+                    message = "El stock se actualizó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al actualizar el stock", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteProduct(long businessID, long productID)
+        {
+            try
+            {
+                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(businessID, productID);
+                if (productBusiness == null) return CustomBadRequest(title: "Error al eliminar el producto", message: "El producto no existe");
+                _workContainer.ProductBusiness.SoftDelete(businessID, productID);
+                _workContainer.Save();
+                return Json(new
+                {
+                    success = true,
+                    data = productBusiness.ProductID,
+                    message = "El producto se eliminó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al eliminar el producto", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
     }
