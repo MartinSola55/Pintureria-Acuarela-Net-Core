@@ -36,7 +36,17 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-column flex-sm-row justify-content-between">
-                    <h2 class="card-title mr-2">Detalles de la orden</h2>
+                        <h2 class="card-title mr-2">Detalles de la orden</h2>
+                        <div class="d-flex flex-row justify-content-center">
+                        @if(Model.Status == false)
+                        {
+                            <button type='button' class='btn btn-info mr-2' onclick='confirmOrder()'>Cerrar orden</button>
+                        } 
+                        else
+                        {
+                            <button type='button' class='btn btn-danger mr-2' onclick='unconfirmOrder()'>Cancelar confirmación</button>
+                        }
+                        </div>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-hover">
@@ -67,7 +77,7 @@
                                                 } 
                                                 else
                                                 {
-                                                    <button name="btnUnconfirm" type='button' class='btn btn-danger mr-2' onclick='unconfirmObj(@Json.Serialize(item))'><i class="bi bi-x-lg"></i></button>
+                                                    <button name="btnUnconfirm" type='button' class='btn btn-danger mr-2' onclick='unconfirmObj(@Json.Serialize(item))' @(Model.Status != false ? "disabled" : "")><i class="bi bi-x-lg"></i></button>
                                                 }
                                             </div>
                                         </td>
@@ -93,9 +103,59 @@
         <input type="hidden" name="ProductID" value="">
         <input type="hidden" name="OrderID" value="@Model.ID">
     </form>
+
+    <form id="form-confirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="ConfirmOrder">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.ID">
+    </form>
+
+    <form id="form-unconfirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="UnconfirmOrder">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.ID">
+    </form>
 </div>
 
 <script>
+    function confirmOrder() {
+        Swal.fire({
+            title: '¿Está seguro que desea cerrar la orden?',
+            text: "No podrá modificar más los productos",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                sendForm("confirm-order");
+            },
+        });
+    }
+
+    function unconfirmOrder() {
+        Swal.fire({
+            title: '¿Está seguro que desea cancelar la confirmación de la orden?',
+            text: "Todos los productos reestablecerán su stock original",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                sendForm("unconfirm-order");
+            },
+        });
+    }
+
     function unconfirmObj(entity) {
         Swal.fire({
             title: '¿Está seguro que desea cancelar la confirmación del producto?',

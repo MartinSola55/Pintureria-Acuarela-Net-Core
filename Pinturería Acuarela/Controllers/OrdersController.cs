@@ -119,7 +119,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 foreach (ProductOrder product in order.Products)
                 {
-                    ProductBusiness prod = _workContainer.ProductBusiness.GetOne(product.ProductID, user.BusinessID);
+                    ProductBusiness prod = _workContainer.ProductBusiness.GetOne(user.BusinessID, product.ProductID);
 
                     if (prod == null) return CustomBadRequest(title: "Error al crear la venta", message: "El producto ingresado no existe en los registros");
 
@@ -242,7 +242,7 @@ namespace Pinturería_Acuarela.Controllers
                 Order order = _workContainer.Order.GetFirstOrDefault(x => x.ID == productOrder.OrderID, includeProperties: "User");
                 ProductOrder product = _workContainer.ProductOrder.GetOne(productOrder.OrderID, productOrder.ProductID);
                 if (product == null) return CustomBadRequest(title: "Error al confirmar el producto", message: "El producto ingresado no existe en los registros");
-                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(productOrder.ProductID, productOrder.BusinessID.Value);
+                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(productOrder.BusinessID.Value, productOrder.ProductID);
                 if (productBusiness == null) return CustomBadRequest(title: "Error al confirmar el producto", message: "La sucursal ingresada no existe en los registros");
                 if (product.QuantitySend > productBusiness.Stock) return CustomBadRequest(title: "Error al confirmar el producto", message: "La sucursal no cuenta con stock suficiente");
 
@@ -276,9 +276,9 @@ namespace Pinturería_Acuarela.Controllers
             {
                 Order order = _workContainer.Order.GetFirstOrDefault(x => x.ID == productOrder.OrderID, includeProperties: "User");
                 ProductOrder product = _workContainer.ProductOrder.GetOne(productOrder.OrderID, productOrder.ProductID);
-                if (product == null) return CustomBadRequest(title: "Error al confirmar el producto", message: "El producto ingresado no existe en los registros");
-                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(productOrder.ProductID, product.BusinessID.Value);
-                if (productBusiness == null) return CustomBadRequest(title: "Error al confirmar el producto", message: "La sucursal ingresada no existe en los registros");
+                if (product == null) return CustomBadRequest(title: "Error al cancelar la confirmación del producto", message: "El producto ingresado no existe en los registros");
+                ProductBusiness productBusiness = _workContainer.ProductBusiness.GetOne(product.BusinessID.Value, productOrder.ProductID);
+                if (productBusiness == null) return CustomBadRequest(title: "Error al cancelar la confirmación del producto", message: "La sucursal ingresada no existe en los registros");
 
                 _workContainer.BeginTransaction();
 
@@ -299,6 +299,79 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception e)
             {
                 return CustomBadRequest(title: "Error al cancelar la confirmación del producto", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmOrder(long id)
+        {
+            try
+            {
+                Order order = _workContainer.Order.GetFirstOrDefault(x => x.ID == id, includeProperties: "Products");
+                if (order == null) return CustomBadRequest(title: "Error al cerrar la orden", message: "La orden ingresada no existe en los registros");
+
+                _workContainer.BeginTransaction();
+
+                order.Status = true;
+
+                foreach(ProductOrder product in order.Products)
+                {
+                    product.Status = true;
+                }
+
+                _workContainer.Save();
+                _workContainer.Commit();
+                return Json(new
+                {
+                    success = true,
+                    message = "La orden se cerró correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al cerrar la orden", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UnconfirmOrder(long id)
+        {
+            try
+            {
+                Order order = _workContainer.Order.GetFirstOrDefault(x => x.ID == id, includeProperties: "Products, User");
+                if (order == null) return CustomBadRequest(title: "Error al cancelar la confirmación de la orden", message: "La orden ingresada no existe en los registros");
+
+                _workContainer.BeginTransaction();
+
+                order.Status = false;
+
+                foreach (ProductOrder product in order.Products)
+                {
+                    if (product.BusinessID != null)
+                    {
+                        ProductBusiness businessSender = _workContainer.ProductBusiness.GetOne(product.BusinessID.Value, product.ProductID);
+                        businessSender.Stock += product.QuantitySend;
+                        ProductBusiness businessReceiver = _workContainer.ProductBusiness.GetOne(order.User.BusinessID, product.ProductID);
+                        businessReceiver.Stock -= product.QuantitySend;
+                    }
+                    product.Status = false;
+                    product.QuantitySend = 0;
+                    product.BusinessID = null;
+                }
+
+                _workContainer.Save();
+                _workContainer.Commit();
+                return Json(new
+                {
+                    success = true,
+                    message = "Se canceló la confirmación de la orden correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al confirmar la orden", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
     }
