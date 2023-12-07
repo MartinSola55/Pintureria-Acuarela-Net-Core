@@ -56,10 +56,10 @@
                             <tbody id="table_body">
                                 @foreach (var item in Model.Orders)
                                 {
-                                    <tr data-id="@item.ID" style="cursor: pointer">
-                                        <td>@item.User.Business.Address</td>
-                                        <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
-                                        <td>@(item.Status == false ? "En espera" : "Confirmado")</td>
+                                    <tr data-id="@item.ID">
+                                        <td style="cursor: pointer">@item.User.Business.Address</td>
+                                        <td style="cursor: pointer">@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
+                                        <td style="cursor: pointer">@(item.Status == false ? "En espera" : "Cerrada")</td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
                                                 <button name="btnDelete" type='button' class='btn btn-danger mr-2' onclick="deleteObj(@item.ID)"><i class="bi bi-trash"></i></button>
@@ -147,13 +147,25 @@
             },
         });
 
-        $("#DataTable tbody tr").on("click", function () {
-            window.location.href = window.location.origin + "/Orders/Details/" + $(this).data("id");
+        $("#DataTable tbody tr").on("click", function (e) {
+            let clickedCellIndex = $(e.target).closest("td").index();
+            let lastCellIndex = $(this).find("td").length - 1;
+
+            if (clickedCellIndex !== lastCellIndex) {
+                window.location.href = window.location.origin + "/Orders/Details/" + $(this).data("id");
+            }
         });
 
+
+
         dataTable.on('draw.dt', function () {
-            $("#DataTable tbody tr").on("click", function () {
-                window.location.href = window.location.origin + "/Orders/Details/" + $(this).data("id");
+            $("#DataTable tbody tr").on("click", function (e) {
+                let clickedCellIndex = $(e.target).closest("td").index();
+                let lastCellIndex = $(this).find("td").length - 1;
+
+                if (clickedCellIndex !== lastCellIndex) {
+                    window.location.href = window.location.origin + "/Orders/Details/" + $(this).data("id");
+                }
             });
         });
     });
@@ -185,6 +197,7 @@
             let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
             // Establecer el atributo data-id en la fila
             addedRow.setAttribute('data-id', order.id);
+            $(addedRow).find('td:eq(0), td:eq(1), td:eq(2)').css('cursor', 'pointer');
         });
     }
 

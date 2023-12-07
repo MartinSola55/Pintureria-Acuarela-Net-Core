@@ -162,10 +162,10 @@ namespace Pinturería_Acuarela.Controllers
                     {
                         success = true,
                         data = id,
-                        message = "La venta se eliminó correctamente",
+                        message = "La orden se eliminó correctamente",
                     });
                 }
-                return CustomBadRequest(title: "Error al eliminar", message: "No se encontró la venta solicitada");
+                return CustomBadRequest(title: "Error al eliminar", message: "No se encontró la orden solicitada");
             }
             catch (SqlException e)
             {
@@ -173,7 +173,7 @@ namespace Pinturería_Acuarela.Controllers
             }
             catch (Exception e)
             {
-                return CustomBadRequest(title: "Error al eliminar la venta", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+                return CustomBadRequest(title: "Error al eliminar la orden", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
 
@@ -192,12 +192,12 @@ namespace Pinturería_Acuarela.Controllers
                     filter = order => order.CreatedAt.Year.ToString() == year && order.UserID.Equals(user.Id);
                 }
 
-                var orders = _workContainer.Order.GetAll(filter, includeProperties: "User.Business")
+                var orders = _workContainer.Order.GetAll(filter, includeProperties: "User.Business").OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Status)
                    .Select(x => new
                    {
                        id = x.ID,
                        createdAt = x.CreatedAt,
-                       status = x.Status == false ? "En espera" : "Confirmado",
+                       status = x.Status == false ? "En espera" : "Cerrada",
                        address = x.User.Business.Address,
                    });
                 return Json(new
