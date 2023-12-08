@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pinturería_Acuarela.Data.Repository.IRepository;
 using Pinturería_Acuarela.Models;
 using Pinturería_Acuarela.Models.ViewModels.Businesses;
+using System.Linq.Expressions;
 
 namespace Pinturería_Acuarela.Controllers
 {
@@ -21,6 +22,7 @@ namespace Pinturería_Acuarela.Controllers
             });
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -35,8 +37,8 @@ namespace Pinturería_Acuarela.Controllers
                 DetailsViewModel viewModel = new()
                 {
                     Business = _workContainer.Business.GetOne(id),
-                    StocklessProducts = _workContainer.Business.GetStocklessProducts(id),
-                    StockAlertProducts = _workContainer.Business.GetStockAlertProducts(id),
+                    StocklessProducts = _workContainer.Business.GetStocklessProducts(id).Count(),
+                    StockAlertProducts = _workContainer.Business.GetStockAlertProducts(id).Count(),
                     TotalProducts = _workContainer.Business.GetTotalProducts(id),
                     PendingOrders = _workContainer.Order.GetPendingOrders(id),
                     TotalLiters = _workContainer.Business.GetTotalLiters(id)
@@ -60,6 +62,42 @@ namespace Pinturería_Acuarela.Controllers
                     Products = _workContainer.Business.GetProducts(id).ToList()
                 };
                 return View("Stock/Products", viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult StocklessProducts(long id)
+        {
+            try
+            {
+                ProductsViewModel viewModel = new()
+                {
+                    Business = _workContainer.Business.GetOne(id),
+                    Products = _workContainer.Business.GetStocklessProducts(id).ToList()
+                };
+                return View("Stock/Stockless", viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult StockAlertProducts(long id)
+        {
+            try
+            {
+                ProductsViewModel viewModel = new()
+                {
+                    Business = _workContainer.Business.GetOne(id),
+                    Products = _workContainer.Business.GetStockAlertProducts(id).ToList()
+                };
+                return View("Stock/StockAlert", viewModel);
             }
             catch (Exception)
             {
@@ -111,6 +149,54 @@ namespace Pinturería_Acuarela.Controllers
             catch (Exception e)
             {
                 return CustomBadRequest(title: "Error al eliminar el producto", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AssociateProducts(long id)
+        {
+            try
+            {
+                Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
+                AssociateViewModel viewModel = new()
+                {
+                    Business = _workContainer.Business.GetOne(id),
+                    Products = _workContainer.Business.GetProductsNotAssociated(id).ToList(),
+                };
+                return View("Stock/AssociateProducts", viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Associate(AssociateViewModel viewModel)
+        {
+            try
+            {
+                Product product = _workContainer.Product.GetOne(viewModel.ProductBusiness.ProductID);
+                ProductBusiness associatedProduct = new()
+                {
+                    ProductID = viewModel.ProductBusiness.ProductID,
+                    BusinessID = viewModel.ProductBusiness.BusinessID,
+                    Stock = viewModel.ProductBusiness.Stock,
+                    CreatedAt = DateTime.UtcNow.AddHours(-3),
+                };
+                _workContainer.ProductBusiness.Add(associatedProduct);
+                _workContainer.Save();
+                return Json(new
+                {
+                    success = true,
+                    data = viewModel.ProductBusiness.ProductID,
+                    message = "El producto se asoció correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al asociar el producto", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
     }

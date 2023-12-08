@@ -4,6 +4,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
+    var role = SignInManager.UserManager.GetRolesAsync(UserManager.GetUserAsync(User).Result).Result.FirstOrDefault();
+    ApplicationUser user = UserManager.GetUserAsync(User).Result;
     string email = User.Identity.Name;
     string[] parts = email.Split('@');
     string username = parts[0];
@@ -85,40 +87,60 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
 
-                    <!-- ADMIN -->
-                    <li class="nav-small-cap">VENTAS</li>
+                    <li class="nav-small-cap">GESTIÓN</li>
                     <li>
                         <a class="waves-effect waves-dark" asp-area="" asp-controller="Home" asp-action="Index" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
                     </li>
                     <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Products" asp-action="Index" aria-expanded="false"><i class="bi bi-box"></i><span class="hide-menu">Productos</span></a>
+                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Stock" asp-route-id="@user.BusinessID" aria-expanded="false"><i class="bi bi-bag-plus"></i><span class="hide-menu">Stock</span></a>
                     </li>
-                    <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-card-list"></i><span class="hide-menu">Órdenes</span></a>
-                    </li>
-                    <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-bag"></i><span class="hide-menu">Ventas</span></a>
-                    </li>
-                    <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Index" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Sucursales</span></a>
-                    </li>
-                    <li class="nav-devider"></li>
+                    @switch (role)
+                    {
+                        case Constants.Admin:
+                        {
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Products" asp-action="Index" aria-expanded="false"><i class="bi bi-archive"></i><span class="hide-menu">Productos</span></a>
+                                </li>
 
-                    <li class="nav-small-cap">NEGOCIO</li>
-                    <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Stats" aria-expanded="false"><i class="bi bi-cash"></i><span class="hide-menu">Estadísticas</span></a>
-                    </li>
+                                <li class="nav-devider"></li>
+                                <li class="nav-small-cap">NEGOCIO</li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-basket"></i><span class="hide-menu">Ordenes</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Index" aria-expanded="false"><i class="bi bi-shop-window"></i><span class="hide-menu">Sucursales</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Stats" asp-action="Index" aria-expanded="false"><i class="bi bi-graph-up"></i><span class="hide-menu">Estadísticas</span></a>
+                                </li>
+                                
+                                <li class="nav-devider"></li>
+                                <li class="nav-small-cap">CONFIGURACIÓN</li>
+                                <li>
+                                    <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-gear"></i><span class="hide-menu">Configuración</span></a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a asp-area="" asp-controller="Brands" asp-action="Index">Marcas</a></li>
+                                        <li><a asp-area="" asp-controller="Colors" asp-action="Index">Colores</a></li>
+                                    </ul>
+                                </li>
+                            break;
+                        }
+                        case Constants.Employee:
+                        {
+                                <li class="nav-devider"></li>
+                                <li class="nav-small-cap">NEGOCIO</li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-basket"></i><span class="hide-menu">Ordenes</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-card-checklist"></i><span class="hide-menu">Ventas</span></a>
+                                </li>
+                            break;
+                        }
+                    }
 
-                    <li class="nav-devider"></li>
+                    
 
-                    <li class="nav-small-cap">CONFIGURACIÓN</li>
-
-                    <li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-gear"></i><span class="hide-menu">Configuración</span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a asp-area="" asp-controller="Brands" asp-action="Index">Marcas</a></li>
-                            <li><a asp-area="" asp-controller="Colors" asp-action="Index">Colores</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </nav>
             <!-- End Sidebar navigation -->

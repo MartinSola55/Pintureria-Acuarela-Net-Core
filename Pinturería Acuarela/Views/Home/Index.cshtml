@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "Inicio";
-    DateTime today = DateTime.UtcNow.AddHours(-3);
 }
 
 <link href="~/lib/css-chart/css-chart.css" rel="stylesheet">
@@ -33,7 +32,7 @@
     <!-- Start Page Content -->
     <!-- ============================================================== -->
 
-    <div class="row">
+    <div class="row justify-content-center">
         <a href="/Sales/New" class="data-card">
             <h3>Crear</h3>
             <h4>Nueva venta</h4>
@@ -44,7 +43,7 @@
                 </svg>
             </span>
         </a>
-        <a href="/Product_Business/StocklessProducts/" class="data-card">
+        <a href="/Businesses/StocklessProducts/@Model.User.BusinessID" class="data-card">
             <h3>@Model.StocklessProducts</h3>
             <h4>Productos sin stock</h4>
             <span class="link-text">
@@ -54,7 +53,7 @@
                 </svg>
             </span>
         </a>
-        <a href="/Product_Business/StockAlertProducts/" class="data-card">
+        <a href="/Businesses/StockAlertProducts/@Model.User.BusinessID" class="data-card">
             <h3>@Model.StockAlertProducts</h3>
             <h4>Productos con bajo stock</h4>
             <span class="link-text">

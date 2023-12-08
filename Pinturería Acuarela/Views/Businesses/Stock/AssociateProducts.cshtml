@@ -1,4 +1,4 @@
-﻿@model Pinturería_Acuarela.Models.ViewModels.Businesses.ProductsViewModel
+﻿@model Pinturería_Acuarela.Models.ViewModels.Businesses.AssociateViewModel
 @using System.Globalization
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
@@ -36,7 +36,8 @@
                     <li class="breadcrumb-item"><a asp-area="" asp-controller="Businesses" asp-action="Index">Sucursales</a></li>
                     <li class="breadcrumb-item"><a asp-area="" asp-controller="Businesses" asp-action="Details" asp-route-id="@Model.Business.ID">@Model.Business.Address</a></li>
                 }
-                <li class="breadcrumb-item active">Stock</li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Businesses" asp-action="Stock" asp-route-id="@Model.Business.ID">Stock</a></li>
+                <li class="breadcrumb-item active">Asociar productos</li>
             </ol>
         </div>
     </div>
@@ -51,10 +52,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-md-row flex-column justify-content-between">
-                        <h2 class="card-title">Listado de productos de @Model.Business.Address</h2>
-                        <div>
-                            <a asp-area="" asp-controller="Businesses" asp-action="AssociateProducts" asp-route-id="@Model.Business.ID" class="btn btn-info">Asociar productos</a>
-                        </div>
+                        <h2 class="card-title">Listado de productos</h2>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
@@ -63,21 +61,18 @@
                                     <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
-                                    <th>Stock</th>
-                                    <th>Editar stock</th>
+                                    <th>Agregar</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
                                 @foreach (var item in Model.Products)
                                 {
-                                    <tr data-id="@item.ProductID">
-                                        <td>@Html.DisplayFor(c => item.Product.InternalCode)</td>
-                                        <td>@Html.DisplayFor(c => item.Product.Description)</td>
-                                        <td>@Html.DisplayFor(c => item.Product.Brand.Name)</td>
-                                        <td>@Html.DisplayFor(c => item.Stock)</td>
+                                    <tr data-id="@item.ID">
+                                        <td>@Html.DisplayFor(c => item.InternalCode)</td>
+                                        <td>@Html.DisplayFor(c => item.Description)</td>
+                                        <td>@Html.DisplayFor(c => item.Brand.Name)</td>
                                         <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))'><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ProductID)'><i class='bi bi-trash3'></i></button>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='associate(@Json.Serialize(item))'><i class="bi bi-plus-lg"></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -85,16 +80,11 @@
                         </table>
                     </div>
 
-                    <form id="form-delete" method="POST" asp-area="" asp-controller="Businesses" asp-action="DeleteProduct">
+                    <form id="form-add" method="POST" asp-area="" asp-controller="Businesses" asp-action="Associate">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="businessID" value="@Model.Business.ID">
-                        <input type="hidden" name="productID" value="">
-                    </form>
-                    <form id="form-updateStock" method="POST" asp-area="" asp-controller="Businesses" asp-action="UpdateStock">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="businessID" value="@Model.Business.ID">
-                        <input type="hidden" name="productID" value="">
-                        <input type="hidden" name="stock" value="">
+                        <input type="hidden" asp-for="ProductBusiness.BusinessID" value="@Model.Business.ID">
+                        <input type="hidden" asp-for="ProductBusiness.ProductID" value="">
+                        <input type="hidden" asp-for="ProductBusiness.Stock" value="">
                     </form>
                 </div>
             </div>
@@ -104,43 +94,8 @@
 
 
 <script>
-    function fillTable(item) {
-        let content = `
-                    <tr data-id='${item.productID}'>
-                    <td>${item.product.internalCode}</td>
-                    <td>${item.product.description}</td>
-                    <td>${item.product.brand.name}</td>
-                    <td>${item.stock}</td>
-                    <td class='d-flex flex-row justify-content-center'>
-                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})'><i class="bi bi-pencil"></i></button>
-                        <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.productID})'><i class='bi bi-trash3'></i></button>
-                    </td>
-                </tr>`;
-        $('#DataTable').DataTable().row.add($(content)).draw();
-    }
-
     function removeFromTable(id) {
         $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
-    }
-
-    function deleteObj(id) {
-        Swal.fire({
-            title: "¿Seguro deseas eliminar este producto?",
-            text: "Esta acción no se puede deshacer",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Eliminar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $("#form-delete input[name='productID']").val(id);
-                sendForm("delete");
-            }
-        });
     }
 
     function sendForm(action) {
@@ -179,13 +134,10 @@
             });
         }
     }
-</script>
 
-<script>
-    function edit(entity) {
+    function associate(entity) {
         Swal.fire({
-            title: 'Ingrese el nuevo stock:',
-            text: `Stock anterior: ${entity.stock} u.`,
+            title: 'Ingrese el stock:',
             input: 'number',
             inputAttributes: {
                 min: 0,
@@ -206,9 +158,9 @@
                 }
             },
             preConfirm: (cantidad) => {
-                $("#form-updateStock input[name='productID']").val(entity.productID);
-                $("#form-updateStock input[name='stock']").val(cantidad);
-                sendForm('updateStock');
+                $("#form-add input[name='ProductBusiness.ProductID']").val(entity.id);
+                $("#form-add input[name='ProductBusiness.Stock']").val(cantidad);
+                sendForm('add');
             },
         });
     }

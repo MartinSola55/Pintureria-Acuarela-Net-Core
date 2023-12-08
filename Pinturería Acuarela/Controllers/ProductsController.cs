@@ -6,7 +6,7 @@ using Pinturería_Acuarela.Models.ViewModels.Products;
 
 namespace Pinturería_Acuarela.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Constants.Admin)]
     public class ProductsController(IWorkContainer workContainer) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;

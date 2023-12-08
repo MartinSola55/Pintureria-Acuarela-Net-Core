@@ -1,0 +1,105 @@
+﻿@model Pinturería_Acuarela.Models.ViewModels.Businesses.ProductsViewModel
+@using System.Globalization
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Productos sin stock";
+    var role = SignInManager.UserManager.GetRolesAsync(UserManager.GetUserAsync(User).Result).Result.FirstOrDefault();
+}
+
+<link href="~/lib/css-chart/css-chart.css" rel="stylesheet">
+<!--This page css - Morris CSS -->
+<link href="~/lib/c3-master/c3.min.css" rel="stylesheet">
+<!-- Vector CSS -->
+<link href="~/lib/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- This is data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+
+
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Sucursales</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                @if (role == Constants.Admin)
+                {
+                    <li class="breadcrumb-item"><a asp-area="" asp-controller="Businesses" asp-action="Index">Sucursales</a></li>
+                    <li class="breadcrumb-item"><a asp-area="" asp-controller="Businesses" asp-action="Details" asp-route-id="@Model.Business.ID">@Model.Business.Address</a></li>
+                }
+                <li class="breadcrumb-item active">Alerta de stock</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-md-row flex-column justify-content-between">
+                        <h2 class="card-title">Listado de productos con bajo stock de @Model.Business.Address</h2>
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="DataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Marca</th>
+                                    <th>Stock mínimo</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.Products)
+                                {
+                                    <tr data-id="@item.ProductID">
+                                        <td>@Html.DisplayFor(c => item.Product.InternalCode)</td>
+                                        <td>@Html.DisplayFor(c => item.Product.Description)</td>
+                                        <td>@Html.DisplayFor(c => item.Product.Brand.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.MinimumStock)</td>
+                                        <td>@Html.DisplayFor(c => item.Stock)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#DataTable').DataTable({
+        "language": {
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
+            "sInfoFiltered": "(filtrado de _MAX_ productos en total)",
+            "emptyTable": 'No hay productos que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ productos",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior",
+            },
+        },
+    });
+</script>

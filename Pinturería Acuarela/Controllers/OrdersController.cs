@@ -89,7 +89,7 @@ namespace Pinturería_Acuarela.Controllers
                 Order order = _workContainer.Order.GetFirstOrDefault(filter, includeProperties: "Products, Products.Product, Products.Product.Brand");
                 if (order == null)
                 {
-                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "La venta no existe", ErrorCode = 404 });
+                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "La orden no existe", ErrorCode = 404 });
                 }
 
                 return View(order);
@@ -121,7 +121,7 @@ namespace Pinturería_Acuarela.Controllers
                 {
                     ProductBusiness prod = _workContainer.ProductBusiness.GetOne(user.BusinessID, product.ProductID);
 
-                    if (prod == null) return CustomBadRequest(title: "Error al crear la venta", message: "El producto ingresado no existe en los registros");
+                    if (prod == null) return CustomBadRequest(title: "Error al crear la orden", message: "El producto ingresado no existe en los registros");
 
                     product.OrderID = order.ID;
                     product.QuantitySend = 0;
@@ -131,21 +131,22 @@ namespace Pinturería_Acuarela.Controllers
                 return Json(new
                 {
                     success = true,
-                    message = "La venta se creó correctamente",
+                    message = "La orden se creó correctamente",
                 });
             }
             catch (FormatException)
             {
                 _workContainer.Rollback();
-                return CustomBadRequest(title: "Error al editar la venta", message: "Alguno de los campos ingresados no posee un formato válido");
+                return CustomBadRequest(title: "Error al editar la orden", message: "Alguno de los campos ingresados no posee un formato válido");
             }
             catch (Exception e)
             {
                 _workContainer.Rollback();
-                return CustomBadRequest(title: "Error al editar la venta", message: "Intente nuevamente o comuníquese para soporte", e.Message);
+                return CustomBadRequest(title: "Error al editar la orden", message: "Intente nuevamente o comuníquese para soporte", e.Message);
             }
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SoftDelete(long id)
@@ -208,7 +209,7 @@ namespace Pinturería_Acuarela.Controllers
             }
             catch (Exception e)
             {
-                return CustomBadRequest(title: "Error al recuperar las ventas del " + year, message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+                return CustomBadRequest(title: "Error al recuperar las ordenes del " + year, message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
 
@@ -233,6 +234,7 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmProduct(ProductOrder productOrder)
@@ -268,6 +270,7 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UnconfirmProduct(ProductOrder productOrder)
@@ -302,6 +305,7 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmOrder(long id)
@@ -334,6 +338,7 @@ namespace Pinturería_Acuarela.Controllers
             }
         }
 
+        [Authorize(Roles = Constants.Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UnconfirmOrder(long id)

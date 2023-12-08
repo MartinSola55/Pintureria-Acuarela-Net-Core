@@ -12,14 +12,14 @@ namespace Pinturería_Acuarela.Data.Repository
     public class BusinessRepository(ApplicationDbContext db) : Repository<Business>(db), IBusinessRepository
     {
         private readonly ApplicationDbContext _db = db;
-        public int GetStockAlertProducts(long businessID)
+        public IEnumerable<ProductBusiness> GetStockAlertProducts(long businessID)
         {
-            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock < x.MinimumStock).Count();
+            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock < x.MinimumStock).Include(x => x.Product).Include(x => x.Product.Brand);
         }
 
-        public int GetStocklessProducts(long businessID)
+        public IEnumerable<ProductBusiness> GetStocklessProducts(long businessID)
         {
-            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock == 0).Count();
+            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock == 0).Include(x => x.Product).Include(x => x.Product.Brand);
         }
 
         public double GetTotalLiters(long businessID)
@@ -35,6 +35,11 @@ namespace Pinturería_Acuarela.Data.Repository
         public IEnumerable<ProductBusiness> GetProducts(long id)
         {
             return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(id)).Include(x => x.Product).Include(x => x.Product.Brand).Include(x => x.Product.Category).Include(x => x.Product.Capacity);
+        }
+
+        public IEnumerable<Product> GetProductsNotAssociated(long id)
+        {
+            return _db.Products.Where(x => !_db.ProductsBusiness.Any(y => y.ProductID.Equals(x.ID) && y.BusinessID.Equals(id))).Include(x => x.Brand).Include(x => x.Category).Include(x => x.Capacity);
         }
     }
 }

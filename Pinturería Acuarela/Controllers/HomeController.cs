@@ -13,7 +13,6 @@ namespace Pinturería_Acuarela.Controllers
     public class HomeController(IWorkContainer workContainer, IConfiguration config) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
-        private readonly IConfiguration _config = config;
 
         [HttpGet]
         public IActionResult Index()
@@ -23,7 +22,7 @@ namespace Pinturería_Acuarela.Controllers
                 int stocklessProducts = 0;
                 int stockAlertProducts = 0;
                 int pendingOrders = 0;
-                ApplicationUser? user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+                ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
                 switch (user.BusinessID)
                 {
                     case 1:
@@ -41,6 +40,7 @@ namespace Pinturería_Acuarela.Controllers
                 }
                 IndexViewModel viewModel = new()
                 {
+                    User = user,
                     StocklessProducts = stocklessProducts,
                     StockAlertProducts = stockAlertProducts,
                     PendingOrders = pendingOrders

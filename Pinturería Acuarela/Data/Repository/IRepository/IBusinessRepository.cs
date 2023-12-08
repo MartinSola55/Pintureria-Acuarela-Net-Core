@@ -9,10 +9,11 @@ namespace Pinturería_Acuarela.Data.Repository.IRepository
 {
     public interface IBusinessRepository : IRepository<Business>
     {
-        int GetStocklessProducts(long businessID);
-        int GetStockAlertProducts(long businessID);
+        IEnumerable<ProductBusiness> GetProducts(long id);
+        IEnumerable<ProductBusiness> GetStocklessProducts(long businessID);
+        IEnumerable<ProductBusiness> GetStockAlertProducts(long businessID);
+        IEnumerable<Product> GetProductsNotAssociated(long businessID);
         int GetTotalProducts(long businessID);
         double GetTotalLiters(long businessID);
-        IEnumerable<ProductBusiness> GetProducts(long id);
     }
 }
