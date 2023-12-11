@@ -51,5 +51,18 @@ namespace Pinturería_Acuarela.Data.Repository
         {
             return _db.Products.Where(x => !_db.ProductsBusiness.Any(y => y.ProductID.Equals(x.ID) && y.BusinessID.Equals(id))).Include(x => x.Brand).Include(x => x.Category).Include(x => x.Capacity);
         }
+
+        public IEnumerable<SelectListItem> GetDropDownList()
+        {
+            IEnumerable<SelectListItem> brands = new List<SelectListItem>
+            {
+                new() { Value = "", Text = "Todo el sistema", Selected = true }
+            };
+            return brands.Concat(_db.Businesses.OrderBy(x => x.Address).Select(i => new SelectListItem()
+            {
+                Text = i.Address,
+                Value = i.ID.ToString(),
+            }));
+        }
     }
 }

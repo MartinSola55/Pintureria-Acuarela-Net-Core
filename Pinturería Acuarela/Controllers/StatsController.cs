@@ -22,9 +22,10 @@ namespace Pinturería_Acuarela.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    AnnualSales = this.GetAnnualSales(today.Year.ToString()),
-                    MonthlySales = this.GetMonthlySales(today.Year.ToString(), today.Month.ToString()),
-                    Years = _workContainer.Sale.GetYears()
+                    AnnualSales = this.GetAnnualSales(today.Year.ToString(), null),
+                    MonthlySales = this.GetMonthlySales(today.Year.ToString(), today.Month.ToString(), null),
+                    Years = _workContainer.Sale.GetYears(),
+                    Businesses = _workContainer.Business.GetDropDownList(),
                 };
 
                 return View(viewModel);
@@ -36,9 +37,16 @@ namespace Pinturería_Acuarela.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetAnnualSales(string yearString)
+        public JsonResult GetAnnualSales(string yearString, long? businessID)
         {
-            Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
+            Expression<Func<Sale, bool>> filter;
+            if (businessID == null)
+            {
+                filter = sale => sale.CreatedAt.Year.ToString() == yearString;
+            } else
+            {
+                filter = sale => sale.CreatedAt.Year.ToString() == yearString && sale.User.BusinessID == businessID;
+            }
             IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter);
 
             // Agrupar las ventas por mes y calcular la suma de Amount
@@ -79,9 +87,16 @@ namespace Pinturería_Acuarela.Controllers
 
 
         [HttpGet]
-        public JsonResult GetMonthlySales(string yearString, string monthString)
+        public JsonResult GetMonthlySales(string yearString, string monthString, long? businessID)
         {
-            Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString && sale.CreatedAt.Month.ToString() == monthString;
+            Expression<Func<Sale, bool>> filter;
+            if (businessID == null)
+            {
+                filter = sale => sale.CreatedAt.Year.ToString() == yearString && sale.CreatedAt.Month.ToString() == monthString;
+            } else
+            {
+                filter = sale => sale.CreatedAt.Year.ToString() == yearString && sale.CreatedAt.Month.ToString() == monthString && sale.User.BusinessID == businessID;
+            }
             IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter);
 
             // Convertir los parámetros de cadena a valores numéricos

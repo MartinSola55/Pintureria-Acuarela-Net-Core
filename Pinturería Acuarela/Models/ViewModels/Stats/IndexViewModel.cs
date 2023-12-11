@@ -8,5 +8,6 @@ namespace Pinturería_Acuarela.Models.ViewModels.Stats
         public required JsonResult AnnualSales { get; set; }
         public required JsonResult MonthlySales { get; set; }
         public IEnumerable<SelectListItem> Years { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> Businesses { get; set; } = new List<SelectListItem>();
     }
 }

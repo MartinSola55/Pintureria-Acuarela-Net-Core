@@ -38,6 +38,8 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-start align-items-center ">
                         <h4 class="card-title mr-2 mb-2">Ventas anuales</h4>
                         @Html.DropDownList("annualSalesYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                        <h4 class="card-title mx-2 mb-2">&nbsp;Sucursal:</h4>
+                        @Html.DropDownList("annualSalesBusiness", Model.Businesses, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
                     </div>
                     <div id="extra-area-chart"></div>
                 </div>
@@ -65,6 +67,8 @@
                         </select>
                         <h4 class="card-title mx-2 mb-2">&nbsp;Año:</h4>
                         @Html.DropDownList("monthlySalesYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                        <h4 class="card-title mx-2 mb-2">&nbsp;Sucursal:</h4>
+                        @Html.DropDownList("monthlySalesBusinesses", Model.Businesses, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
                     </div>
                     <div id="morris-area-chart"></div>
                 </div>
@@ -89,17 +93,27 @@
 @*Cambiar gráfico anual*@
 <script>
     $("#annualSalesYear").on("change", function () {
-        let data = { yearString: $(this).val() }
+        let data = { yearString: $(this).val(), businessID: $("#annualSalesBusiness").val() }
+        sendForm("Annual", data);
+    });
+
+    $("#annualSalesBusiness").on("change", function () {
+        let data = { yearString: $("#annualSalesYear").val(), businessID: $(this).val() }
         sendForm("Annual", data);
     });
 
     $("#monthlySalesYear").on("change", function () {
-        let data = { yearString: $(this).val(), monthString: $("#monthlySalesMonth").val() }
+        let data = { yearString: $(this).val(), monthString: $("#monthlySalesMonth").val(), businessID: $("#monthlySalesBusinesses").val() }
         sendForm("Monthly", data);
     });
 
     $("#monthlySalesMonth").on("change", function () {
-        let data = { yearString: $("#monthlySalesYear").val(), monthString: $(this).val() }
+        let data = { yearString: $("#monthlySalesYear").val(), monthString: $(this).val(), businessID: $("#monthlySalesBusinesses").val() }
+        sendForm("Monthly", data);
+    });
+
+    $("#monthlySalesBusinesses").on("change", function () {
+        let data = { yearString: $("#monthlySalesYear").val(), monthString: $("#monthlySalesMonth").val(), businessID: $(this).val() }
         sendForm("Monthly", data);
     });
 
@@ -117,14 +131,6 @@
                     case "Monthly":
                         deleteMonthlyGraph();
                         createMonthlyGraph(response.data);
-                        break;
-                    case "Materials":
-                        deleteMaterialsGraph();
-                        createMaterialsGraph(response.data);
-                        break;
-                    case "Brands":
-                        deleteBrandsGraph();
-                        createBrandsGraph(response.data);
                         break;
                     default:
                         break;

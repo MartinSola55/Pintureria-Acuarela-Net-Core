@@ -81,7 +81,7 @@ namespace Pinturería_Acuarela.Controllers
             {
                 ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
                 Sale sale = viewModel.CreateViewModel;
-                sale.UserID = user.Id;
+                sale.User = user;
                 sale.CreatedAt = DateTime.UtcNow.AddHours(-3);
 
                 _workContainer.BeginTransaction();
@@ -90,7 +90,7 @@ namespace Pinturería_Acuarela.Controllers
 
                 foreach (ProductSale product in sale.Products)
                 {
-                    ProductBusiness prod = _workContainer.ProductBusiness.GetOne(product.ProductID, user.BusinessID);
+                    ProductBusiness prod = _workContainer.ProductBusiness.GetOne(user.BusinessID, product.ProductID);
 
                     if (prod == null) return CustomBadRequest(title: "Error al crear la venta", message: "El producto ingresado no existe en los registros");
                     if (product.Quantity > prod.Stock) return CustomBadRequest(title: "Error al crear la venta", message: "La cantidad ingresada es mayor al stock");
