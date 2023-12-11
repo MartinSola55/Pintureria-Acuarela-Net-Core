@@ -14,7 +14,7 @@ public partial class Brand
     [Display(Name = "Nombre")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "Debes ingresar un nombre de menos de 100 caracteres")]
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un nombre válido")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Required(ErrorMessage = "Debes seleccionar si está o no habilitada")]
     [Display(Name = "Habilitada")]

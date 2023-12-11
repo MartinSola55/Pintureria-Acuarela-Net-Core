@@ -11,5 +11,5 @@ public partial class Subcategory
     public long ID { get; set; }
 
     [Display(Name = "Descripción")]
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 }

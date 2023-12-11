@@ -11,5 +11,5 @@ public partial class Business
     public long ID { get; set; }
 
     [Display(Name = "Dirección")]
-    public string? Address { get; set; }
+    public string Address { get; set; } = null!;
 }

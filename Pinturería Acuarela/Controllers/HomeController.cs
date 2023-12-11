@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Pinturería_Acuarela.Data.Repository.IRepository;
@@ -10,9 +11,11 @@ using System.Linq.Expressions;
 namespace Pinturería_Acuarela.Controllers
 {
     [Authorize]
-    public class HomeController(IWorkContainer workContainer, IConfiguration config) : Controller
+    public class HomeController(IWorkContainer workContainer, IConfiguration config, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
+        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
         [HttpGet]
         public IActionResult Index()
@@ -23,17 +26,18 @@ namespace Pinturería_Acuarela.Controllers
                 int stockAlertProducts = 0;
                 int pendingOrders = 0;
                 ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-                switch (user.BusinessID)
+                string role = _signInManager.UserManager.GetRolesAsync(user).Result.FirstOrDefault();
+                switch (role)
                 {
-                    case 1:
-                        stocklessProducts = 0;// _workContainer.ProductBusiness.Where(p => p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
-                        stockAlertProducts = 0;//_workContainer.ProductBusiness.Where(p => p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
-                        pendingOrders = 0;//_workContainer.Order.Where(o => o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
+                    case Constants.Admin:
+                        stocklessProducts = _workContainer.Business.GetStocklessProducts().Count();
+                        stockAlertProducts = _workContainer.Business.GetStockAlertProducts().Count();
+                        pendingOrders = _workContainer.Order.GetPendingOrders();
                         break;
-                    case 2:
-                        stocklessProducts = 0;// _workContainer.ProductBusiness.Where(p => p.stock == 0 && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
-                        stockAlertProducts = 0;//_workContainer.ProductBusiness.Where(p => p.stock < p.minimum_stock && p.deleted_at.Equals(null) && p.Product.deleted_at.Equals(null)).Count();
-                        pendingOrders = 0;//_workContainer.Order.Where(o => o.status.Equals(false) && o.deleted_at.Equals(null)).Count();
+                    case Constants.Employee:
+                        stocklessProducts = _workContainer.Business.GetStocklessProducts(user.BusinessID).Count();
+                        stockAlertProducts = _workContainer.Business.GetStockAlertProducts(user.BusinessID).Count();
+                        pendingOrders = _workContainer.Order.GetPendingOrders(user.BusinessID);
                         break;
                     default:
                         return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });

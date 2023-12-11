@@ -67,5 +67,10 @@ namespace Pinturería_Acuarela.Data.Repository
         {
             return _db.Orders.Where(x => x.ID == businessID && x.Status.Equals(false)).Count();
         }
+
+        public int GetPendingOrders()
+        {
+            return _db.Orders.Where(x => x.Status.Equals(false)).Count();
+        }
     }
 }

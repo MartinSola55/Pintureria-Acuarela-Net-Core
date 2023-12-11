@@ -13,7 +13,7 @@ public partial class Sale
     public long ID { get; set; }
 
     [Display(Name = "Vendedor")]
-    public string? UserID { get; set; }
+    public string UserID { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }

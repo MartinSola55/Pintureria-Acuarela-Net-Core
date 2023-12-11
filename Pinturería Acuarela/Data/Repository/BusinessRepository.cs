@@ -16,10 +16,20 @@ namespace Pinturería_Acuarela.Data.Repository
         {
             return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock < x.MinimumStock).Include(x => x.Product).Include(x => x.Product.Brand);
         }
+        
+        public IEnumerable<ProductBusiness> GetStockAlertProducts()
+        {
+            return _db.ProductsBusiness.Where(x => x.Stock < x.MinimumStock).Include(x => x.Product).Include(x => x.Product.Brand);
+        }
 
         public IEnumerable<ProductBusiness> GetStocklessProducts(long businessID)
         {
             return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock == 0).Include(x => x.Product).Include(x => x.Product.Brand);
+        }
+
+        public IEnumerable<ProductBusiness> GetStocklessProducts()
+        {
+            return _db.ProductsBusiness.Where(x => x.Stock == 0).Include(x => x.Product).Include(x => x.Product.Brand);
         }
 
         public double GetTotalLiters(long businessID)

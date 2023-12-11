@@ -46,12 +46,12 @@
                                 <div class="form-column">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Name" class="mb-0"></label>
+                                        <label asp-for="CreateViewModel.Name" class="mb-0 required"></label>
                                         <input asp-for="CreateViewModel.Name" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Hex" class="mb-0"></label>
+                                        <label asp-for="CreateViewModel.Hex" class="mb-0 required"></label>
                                         <input asp-for="CreateViewModel.Hex" type="color" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Hex" class="text-danger"></span>
                                     </div>

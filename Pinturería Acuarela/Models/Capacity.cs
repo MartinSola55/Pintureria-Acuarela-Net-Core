@@ -11,7 +11,7 @@ public partial class Capacity
     public long ID { get; set; }
 
     [Display(Name = "Descripción")]
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
     [Display(Name = "Capacidad")]
     public float Volume { get; set; }

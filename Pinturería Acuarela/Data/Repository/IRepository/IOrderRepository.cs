@@ -12,5 +12,6 @@ namespace Pinturería_Acuarela.Data.Repository.IRepository
         IEnumerable<SelectListItem> GetYears();
         void SoftDelete(long id);
         int GetPendingOrders(long businessID);
+        int GetPendingOrders();
     }
 }
