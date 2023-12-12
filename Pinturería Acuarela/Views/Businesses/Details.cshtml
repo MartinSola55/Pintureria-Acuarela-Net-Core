@@ -61,7 +61,7 @@
                 </svg>
             </span>
         </a>
-        <a href="/Businesses/BusinessOrders/@Model.Business.ID" class="data-card">
+        <a href="/Businesses/PendingOrders/@Model.Business.ID" class="data-card">
             <h3>@Model.PendingOrders</h3>
             <h4>Pedidos sin confirmar</h4>
             <span class="link-text">
@@ -82,7 +82,7 @@
             </span>
         </a>
         <div class="data-card">
-            <h3>@Model.TotalLiters</h3>
+            <h3>@Model.TotalLiters.ToString("0.00")</h3>
             <h4>Litros</h4>
             <p>
                 Cantidad de litros sumando todos los productos de la sucursal

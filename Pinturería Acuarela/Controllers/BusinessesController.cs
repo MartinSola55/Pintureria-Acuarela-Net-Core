@@ -41,8 +41,42 @@ namespace Pintureria_Acuarela.Controllers
                     StockAlertProducts = _workContainer.Business.GetStockAlertProducts(id).Count(),
                     TotalProducts = _workContainer.Business.GetTotalProducts(id),
                     PendingOrders = _workContainer.Order.GetPendingOrders(id),
-                    TotalLiters = _workContainer.Business.GetTotalLiters(id)
+                    TotalLiters = _workContainer.Business.GetTotalLiters(id),
                 };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult PendingOrders(long id)
+        {
+            try
+            {
+                ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+                PendingOrdersViewModel viewModel = new();
+
+                if (_workContainer.ApplicationUser.GetRole(user.Id).Name == Constants.Admin)
+                {
+                    Expression<Func<Order, bool>> filter = order => order.Status == false;
+                    viewModel.PendingOrders =
+                    [
+                        .. _workContainer.Order.GetAll(filter, includeProperties: "User.Business").OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Status),
+                    ];
+                    viewModel.Business = _workContainer.Business.GetOne(id);
+                }
+                else
+                {
+                    Expression<Func<Order, bool>> filter = order => order.Status == false && order.UserID.Equals(user.Id);
+                    viewModel.PendingOrders =
+                    [
+                        .. _workContainer.Order.GetAll(filter, includeProperties: "User.Business").OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Status),
+                    ];
+                    viewModel.Business = _workContainer.Business.GetOne(user.BusinessID);
+                }
                 return View(viewModel);
             }
             catch (Exception)
