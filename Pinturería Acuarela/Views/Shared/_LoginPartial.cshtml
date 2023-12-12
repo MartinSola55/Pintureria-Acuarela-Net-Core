@@ -92,7 +92,7 @@
                         <a class="waves-effect waves-dark" asp-area="" asp-controller="Home" asp-action="Index" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
                     </li>
                     <li>
-                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Stock" asp-route-id="@user.BusinessID" aria-expanded="false"><i class="bi bi-bag-plus"></i><span class="hide-menu">Stock</span></a>
+                        <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Stock" asp-route-id="@user.BusinessID" aria-expanded="false"><i class="bi bi-box"></i><span class="hide-menu">Stock</span></a>
                     </li>
                     @switch (role)
                     {
@@ -105,7 +105,10 @@
                                 <li class="nav-devider"></li>
                                 <li class="nav-small-cap">NEGOCIO</li>
                                 <li>
-                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-basket"></i><span class="hide-menu">Ordenes</span></a>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-cart"></i><span class="hide-menu">Ventas</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-card-checklist"></i><span class="hide-menu">Ordenes</span></a>
                                 </li>
                                 <li>
                                     <a class="waves-effect waves-dark" asp-area="" asp-controller="Businesses" asp-action="Index" aria-expanded="false"><i class="bi bi-shop-window"></i><span class="hide-menu">Sucursales</span></a>
@@ -130,10 +133,10 @@
                                 <li class="nav-devider"></li>
                                 <li class="nav-small-cap">NEGOCIO</li>
                                 <li>
-                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-basket"></i><span class="hide-menu">Ordenes</span></a>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-cart"></i><span class="hide-menu">Ventas</span></a>
                                 </li>
                                 <li>
-                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-card-checklist"></i><span class="hide-menu">Ventas</span></a>
+                                    <a class="waves-effect waves-dark" asp-area="" asp-controller="Orders" asp-action="Index" aria-expanded="false"><i class="bi bi-card-checklist"></i><span class="hide-menu">Ordenes</span></a>
                                 </li>
                             break;
                         }

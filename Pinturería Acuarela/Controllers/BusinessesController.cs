@@ -57,26 +57,22 @@ namespace Pintureria_Acuarela.Controllers
             try
             {
                 ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-                PendingOrdersViewModel viewModel = new();
 
-                if (_workContainer.ApplicationUser.GetRole(user.Id).Name == Constants.Admin)
+                if (_workContainer.ApplicationUser.GetRole(user.Id).Name != Constants.Admin && id != user.BusinessID)
                 {
-                    Expression<Func<Order, bool>> filter = order => order.Status == false;
-                    viewModel.PendingOrders =
-                    [
-                        .. _workContainer.Order.GetAll(filter, includeProperties: "User.Business").OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Status),
-                    ];
-                    viewModel.Business = _workContainer.Business.GetOne(id);
+                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "No tiene permisos para acceder a esta página", ErrorCode = 403 });
                 }
-                else
+
+                Expression<Func<Order, bool>> filter = order => order.Status == false && order.UserID.Equals(user.Id);
+                PendingOrdersViewModel viewModel = new()
                 {
-                    Expression<Func<Order, bool>> filter = order => order.Status == false && order.UserID.Equals(user.Id);
-                    viewModel.PendingOrders =
-                    [
+                    PendingOrders = [
                         .. _workContainer.Order.GetAll(filter, includeProperties: "User.Business").OrderByDescending(x => x.CreatedAt).ThenBy(x => x.Status),
-                    ];
-                    viewModel.Business = _workContainer.Business.GetOne(user.BusinessID);
-                }
+                    ],
+                    Business = _workContainer.Business.GetOne(id)
+                };
+
+                
                 return View(viewModel);
             }
             catch (Exception)
