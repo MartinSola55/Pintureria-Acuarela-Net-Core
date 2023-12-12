@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <div class="d-flex flex-column flex-sm-row justify-content-between">
                         <div class="d-flex flex-column flex-sm-row mb-2">
-                            <h2 class="card-title mr-2">Ordenes del año</h2>
+                            <h2 class="card-title mr-2">Ordenes del aÃ±o</h2>
                             @Html.DropDownList("yearSelected", Model.Years, new { @class = "form-control", @style = "max-width: fit-content" })
                         </div>
                         <div>
@@ -83,8 +83,8 @@
 <script>
     function deleteObj(id) {
         Swal.fire({
-            title: "¿Seguro deseas eliminar esta orden?",
-            text: "Esta acción no se puede deshacer",
+            title: "Â¿Seguro deseas eliminar esta orden?",
+            text: "Esta acciÃ³n no se puede deshacer",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Eliminar',
@@ -107,7 +107,7 @@
         // Enviar solicitud AJAX
         $.ajax({
             url: $(form).attr('action'), // Utiliza la ruta del formulario
-            method: $(form).attr('method'), // Utiliza el método del formulario
+            method: $(form).attr('method'), // Utiliza el mÃ©todo del formulario
             data: $(form).serialize(), // Utiliza los datos del formulario
             success: function (response) {
                 Swal.fire({
@@ -135,12 +135,12 @@
                 "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ordenes",
                 "sInfoEmpty": "Mostrando 0 a 0 de 0 ordenes",
                 "sInfoFiltered": "(filtrado de _MAX_ ordenes en total)",
-                "emptyTable": 'No hay ordenes que coincidan con la búsqueda',
+                "emptyTable": 'No hay ordenes que coincidan con la bÃºsqueda',
                 "sLengthMenu": "Mostrar _MENU_ ordenes",
                 "sSearch": "Buscar:",
                 "oPaginate": {
                     "sFirst": "Primero",
-                    "sLast": "Último",
+                    "sLast": "Ãšltimo",
                     "sNext": "Siguiente",
                     "sPrevious": "Anterior",
                 },

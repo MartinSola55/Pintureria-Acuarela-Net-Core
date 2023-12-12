@@ -44,7 +44,7 @@
                         } 
                         else
                         {
-                            <button type='button' class='btn btn-danger mr-2' onclick='unconfirmOrder()'>Cancelar confirmación</button>
+                            <button type='button' class='btn btn-danger mr-2' onclick='unconfirmOrder()'>Cancelar confirmaciÃ³n</button>
                         }
                         </div>
                     </div>
@@ -52,9 +52,9 @@
                         <table id="DataTable" class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Descripción</th>
+                                    <th>DescripciÃ³n</th>
                                     <th>Marca</th>
-                                    <th>Código</th>
+                                    <th>CÃ³digo</th>
                                     <th>Cant. pedida</th>
                                     <th>Cant. enviada</th>
                                     <th>Confirmar</th>
@@ -118,8 +118,8 @@
 <script>
     function confirmOrder() {
         Swal.fire({
-            title: '¿Está seguro que desea cerrar la orden?',
-            text: "No podrá modificar más los productos",
+            title: 'Â¿EstÃ¡ seguro que desea cerrar la orden?',
+            text: "No podrÃ¡ modificar mÃ¡s los productos",
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Confirmar',
@@ -138,8 +138,8 @@
 
     function unconfirmOrder() {
         Swal.fire({
-            title: '¿Está seguro que desea cancelar la confirmación de la orden?',
-            text: "Todos los productos reestablecerán su stock original",
+            title: 'Â¿EstÃ¡ seguro que desea cancelar la confirmaciÃ³n de la orden?',
+            text: "Todos los productos reestablecerÃ¡n su stock original",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Confirmar',
@@ -158,8 +158,8 @@
 
     function unconfirmObj(entity) {
         Swal.fire({
-            title: '¿Está seguro que desea cancelar la confirmación del producto?',
-            text: "El stock se restablecerá en las sucursales",
+            title: 'Â¿EstÃ¡ seguro que desea cancelar la confirmaciÃ³n del producto?',
+            text: "El stock se restablecerÃ¡ en las sucursales",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Confirmar',
@@ -246,7 +246,7 @@
             showLoaderOnConfirm: true,
             inputValidator: (value) => {
                 if (!value || value < 1 || value > entity.stock) {
-                    return 'Por favor, ingrese una cantidad válida';
+                    return 'Por favor, ingrese una cantidad vÃ¡lida';
                 }
             },
             preConfirm: (cantidad) => {
@@ -265,7 +265,7 @@
         // Enviar solicitud AJAX
         $.ajax({
             url: $(form).attr('action'), // Utiliza la ruta del formulario
-            method: $(form).attr('method'), // Utiliza el método del formulario
+            method: $(form).attr('method'), // Utiliza el mÃ©todo del formulario
             data: $(form).serialize(), // Utiliza los datos del formulario
             success: function (response) {
                 Swal.fire({
