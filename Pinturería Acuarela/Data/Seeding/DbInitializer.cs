@@ -16,9 +16,33 @@ namespace Pinturería_Acuarela.Data.Seeding
         {
             modelBuilder.Entity<Brand>().HasData(
                 new Brand() { ID = 1, Name = "Tersuave" },
-                new Brand() { ID = 2, Name = "Alba" },
-                new Brand() { ID = 3, Name = "Black Decker" },
-                new Brand() { ID = 4, Name = "Colorin" }
+                new Brand() { ID = 2, Name = "Sherwin Williams" },
+                new Brand() { ID = 3, Name = "Venier" },
+                new Brand() { ID = 4, Name = "Megaflex" },
+                new Brand() { ID = 5, Name = "Quimex" },
+                new Brand() { ID = 6, Name = "Colorin" },
+                new Brand() { ID = 7, Name = "Plavicon" },
+                new Brand() { ID = 8, Name = "Sinteplast" },
+                new Brand() { ID = 9, Name = "Colvinil" },
+                new Brand() { ID = 10, Name = "Petrilac" },
+                new Brand() { ID = 11, Name = "Magiplast" },
+                new Brand() { ID = 12, Name = "Varios" },
+                new Brand() { ID = 13, Name = "El Galgo" },
+                new Brand() { ID = 14, Name = "Poxipol" },
+                new Brand() { ID = 15, Name = "Siloc" },
+                new Brand() { ID = 16, Name = "Pinciroli" },
+                new Brand() { ID = 17, Name = "Espatulas" },
+                new Brand() { ID = 18, Name = "Abrasivos" },
+                new Brand() { ID = 19, Name = "JMG" },
+                new Brand() { ID = 20, Name = "Trimas" },
+                new Brand() { ID = 21, Name = "Ferrobet" },
+                new Brand() { ID = 22, Name = "Cautisol" },
+                new Brand() { ID = 23, Name = "Mangueras" },
+                new Brand() { ID = 24, Name = "Zeocar" },
+                new Brand() { ID = 25, Name = "Dowen Pagio" },
+                new Brand() { ID = 26, Name = "Bosch" },
+                new Brand() { ID = 27, Name = "Daihatsu" },
+                new Brand() { ID = 28, Name = "Makita" }
             );
             
             modelBuilder.Entity<Business>().HasData(
