@@ -1,7 +1,12 @@
 @model Pintureria_Acuarela.Models.Order
 @using System.Globalization
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Ordenes";
+    var role = SignInManager.UserManager.GetRolesAsync(UserManager.GetUserAsync(User).Result).Result.FirstOrDefault();
 }
 
 <!-- Data table -->
@@ -38,16 +43,23 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between">
                         <h2 class="card-title mr-2">Detalles de la orden</h2>
                         <div class="d-flex flex-row justify-content-center">
-                        @if(Model.Status == false)
+                        @if (Model.Status == false && role == Constants.Admin)
                         {
                             <button type='button' class='btn btn-info mr-2' onclick='confirmOrder()'>Cerrar orden</button>
                         } 
-                        else
+                        else if (role == Constants.Admin)
                         {
                             <button type='button' class='btn btn-danger mr-2' onclick='unconfirmOrder()'>Cancelar confirmación</button>
                         }
                         </div>
                     </div>
+                    @if (Model.Comment != null)
+                    {
+                        <hr />
+                        <h4 class="alert-heading">Comentario</h4>
+                        <p>@Model.Comment</p>
+                        <hr />
+                    }
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-hover">
                             <thead>
@@ -57,7 +69,10 @@
                                     <th>Código</th>
                                     <th>Cant. pedida</th>
                                     <th>Cant. enviada</th>
-                                    <th>Confirmar</th>
+                                    @if (role == Constants.Admin)
+                                    {
+                                        <th>Confirmar</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -69,18 +84,21 @@
                                         <td>@item.Product.InternalCode</td>
                                         <td>@item.Quantity</td>
                                         <td>@item.QuantitySend</td>
-                                        <td>
-                                            <div class='d-flex flex-row justify-content-center'>
-                                                @if(item.Status == false)
-                                                {
-                                                    <button name="btnConfirm" type='button' class='btn btn-success mr-2' onclick='confirmObj(@Json.Serialize(item))'><i class="bi bi-check"></i></button>
-                                                } 
-                                                else
-                                                {
-                                                    <button name="btnUnconfirm" type='button' class='btn btn-danger mr-2' onclick='unconfirmObj(@Json.Serialize(item))' @(Model.Status != false ? "disabled" : "")><i class="bi bi-x-lg"></i></button>
-                                                }
-                                            </div>
-                                        </td>
+                                        @if (role == Constants.Admin)
+                                        {
+                                            <td>
+                                                <div class='d-flex flex-row justify-content-center'>
+                                                    @if(item.Status == false)
+                                                    {
+                                                        <button name="btnConfirm" type='button' class='btn btn-success mr-2' onclick='confirmObj(@Json.Serialize(item))'><i class="bi bi-check"></i></button>
+                                                    } 
+                                                    else
+                                                    {
+                                                        <button name="btnUnconfirm" type='button' class='btn btn-danger mr-2' onclick='unconfirmObj(@Json.Serialize(item))' @(Model.Status != false ? "disabled" : "")><i class="bi bi-x-lg"></i></button>
+                                                    }
+                                                </div>
+                                            </td>
+                                        }
                                     </tr>
                                 }
                             </tbody>
@@ -90,233 +108,238 @@
             </div>
         </div>
     </div>
-    <form id="form-confirm" method="POST" asp-area="" asp-controller="Orders" asp-action="ConfirmProduct">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="ProductID" value="">
-        <input type="hidden" name="BusinessID" value="">
-        <input type="hidden" name="QuantitySend" value="">
-        <input type="hidden" name="OrderID" value="@Model.ID">
-    </form>
+    @if (role == Constants.Admin)
+    {
+        <form id="form-confirm" method="POST" asp-area="" asp-controller="Orders" asp-action="ConfirmProduct">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductID" value="">
+            <input type="hidden" name="BusinessID" value="">
+            <input type="hidden" name="QuantitySend" value="">
+            <input type="hidden" name="OrderID" value="@Model.ID">
+        </form>
 
-    <form id="form-unconfirm" method="POST" asp-area="" asp-controller="Orders" asp-action="UnconfirmProduct">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="ProductID" value="">
-        <input type="hidden" name="OrderID" value="@Model.ID">
-    </form>
+        <form id="form-unconfirm" method="POST" asp-area="" asp-controller="Orders" asp-action="UnconfirmProduct">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductID" value="">
+            <input type="hidden" name="OrderID" value="@Model.ID">
+        </form>
 
-    <form id="form-confirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="ConfirmOrder">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.ID">
-    </form>
+        <form id="form-confirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="ConfirmOrder">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.ID">
+        </form>
 
-    <form id="form-unconfirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="UnconfirmOrder">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.ID">
-    </form>
+        <form id="form-unconfirm-order" method="POST" asp-area="" asp-controller="Orders" asp-action="UnconfirmOrder">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.ID">
+        </form>
+    }
 </div>
-
-<script>
-    function confirmOrder() {
-        Swal.fire({
-            title: '¿Está seguro que desea cerrar la orden?',
-            text: "No podrá modificar más los productos",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                sendForm("confirm-order");
-            },
-        });
-    }
-
-    function unconfirmOrder() {
-        Swal.fire({
-            title: '¿Está seguro que desea cancelar la confirmación de la orden?',
-            text: "Todos los productos reestablecerán su stock original",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                sendForm("unconfirm-order");
-            },
-        });
-    }
-
-    function unconfirmObj(entity) {
-        Swal.fire({
-            title: '¿Está seguro que desea cancelar la confirmación del producto?',
-            text: "El stock se restablecerá en las sucursales",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                let form = document.getElementById('form-unconfirm');
-                form.elements["ProductID"].value = entity.productID;
-                sendForm("unconfirm");
-            },
-        });
-    }
-
-    function confirmObj(entity) {
-        $.ajax({
-            url: "/Orders/GetBusinessesAvailable",
-            method: "get",
-            data: {
-                productID: entity.productID,
-                orderID: entity.orderID,
-            },
-            success: function (response) {
-                askForBusiness(response.data);
-            },
-            error: function (errorThrown) {
-                Swal.fire({
-                    icon: 'error',
-                    title: errorThrown.responseJSON.title,
-                    text: errorThrown.responseJSON.message,
-                    confirmButtonColor: '#1e88e5',
-                });
-            }
-        });
-    }
-
-    function askForBusiness(businesses) {
-            let options = {};
-            businesses.forEach(function (business) {
-                options[JSON.stringify(business)] = business.business.address + " - Stock: " + business.stock + " u.";
-            });
+@if (role == Constants.Admin)
+{
+    <script>
+        function confirmOrder() {
             Swal.fire({
-            title: 'Seleccione una sucursal',
-            input: 'select',
-            inputOptions: options,
-            showCancelButton: true,
-            confirmButtonText: 'Seleccionar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            preConfirm: (business) => {
-                askForQuantity(business);
-            },
-        });
-    }
+                title: '¿Está seguro que desea cerrar la orden?',
+                text: "No podrá modificar más los productos",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    sendForm("confirm-order");
+                },
+            });
+        }
 
-    function askForQuantity(business) {
-        let entity = JSON.parse(business);
-        Swal.fire({
-            title: 'Ingrese la cantidad:',
-            text: `Stock: ${entity.stock} u.`,
-            input: 'number',
-            inputAttributes: {
-                min: 1,
-                max: entity.stock,
-                step: 1
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            inputValidator: (value) => {
-                if (!value || value < 1 || value > entity.stock) {
-                    return 'Por favor, ingrese una cantidad válida';
+        function unconfirmOrder() {
+            Swal.fire({
+                title: '¿Está seguro que desea cancelar la confirmación de la orden?',
+                text: "Todos los productos reestablecerán su stock original",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    sendForm("unconfirm-order");
+                },
+            });
+        }
+
+        function unconfirmObj(entity) {
+            Swal.fire({
+                title: '¿Está seguro que desea cancelar la confirmación del producto?',
+                text: "El stock se restablecerá en las sucursales",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    let form = document.getElementById('form-unconfirm');
+                    form.elements["ProductID"].value = entity.productID;
+                    sendForm("unconfirm");
+                },
+            });
+        }
+
+        function confirmObj(entity) {
+            $.ajax({
+                url: "/Orders/GetBusinessesAvailable",
+                method: "get",
+                data: {
+                    productID: entity.productID,
+                    orderID: entity.orderID,
+                },
+                success: function (response) {
+                    askForBusiness(response.data);
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
                 }
-            },
-            preConfirm: (cantidad) => {
-                let form = document.getElementById('form-confirm');
-                form.elements["ProductID"].value = entity.productID;
-                form.elements["BusinessID"].value = entity.businessID;
-                form.elements["QuantitySend"].value = cantidad;
-                sendForm("confirm");
-            },
-        });
-    }
+            });
+        }
 
-    function sendForm(action) {
-        let form = document.getElementById(`form-${action}`);
-
-        // Enviar solicitud AJAX
-        $.ajax({
-            url: $(form).attr('action'), // Utiliza la ruta del formulario
-            method: $(form).attr('method'), // Utiliza el método del formulario
-            data: $(form).serialize(), // Utiliza los datos del formulario
-            success: function (response) {
+        function askForBusiness(businesses) {
+                let options = {};
+                businesses.forEach(function (business) {
+                    options[JSON.stringify(business)] = business.business.address + " - Stock: " + business.stock + " u.";
+                });
                 Swal.fire({
-                    icon: 'success',
-                    title: response.message,
-                    confirmButtonColor: '#1e88e5',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload();
+                title: 'Seleccione una sucursal',
+                input: 'select',
+                inputOptions: options,
+                showCancelButton: true,
+                confirmButtonText: 'Seleccionar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                preConfirm: (business) => {
+                    askForQuantity(business);
+                },
+            });
+        }
+
+        function askForQuantity(business) {
+            let entity = JSON.parse(business);
+            Swal.fire({
+                title: 'Ingrese la cantidad:',
+                text: `Stock: ${entity.stock} u.`,
+                input: 'number',
+                inputAttributes: {
+                    min: 1,
+                    max: entity.stock,
+                    step: 1
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                inputValidator: (value) => {
+                    if (!value || value < 1 || value > entity.stock) {
+                        return 'Por favor, ingrese una cantidad válida';
                     }
-                });
-            },
-            error: function (errorThrown) {
-                Swal.fire({
-                    icon: 'error',
-                    title: errorThrown.responseJSON.title,
-                    text: errorThrown.responseJSON.message,
-                    confirmButtonColor: '#1e88e5',
-                });
-            }
-        });
-    }
+                },
+                preConfirm: (cantidad) => {
+                    let form = document.getElementById('form-confirm');
+                    form.elements["ProductID"].value = entity.productID;
+                    form.elements["BusinessID"].value = entity.businessID;
+                    form.elements["QuantitySend"].value = cantidad;
+                    sendForm("confirm");
+                },
+            });
+        }
 
-    $(document).ready(function () {
-        let dataTable = $('#DataTable').DataTable({
-            "ordering": false,
-            "searching": false,
-            "info": false,
-            "paginate": false,
-        });
-    });
+        function sendForm(action) {
+            let form = document.getElementById(`form-${action}`);
 
-    function fillTable(data) {
-        data.forEach(function (order) {
-            let button = `
-                <div class='d-flex flex-row justify-content-center'>
-                    <button name="btnConfirm" type='button' class='btn btn-danger mr-2' onclick="confirmObj(${order.id})"><i class="bi bi-check"></i></button>
-                </div>`;
-            let row = [
-                order.address,
-                createDateWithTime(order.createdAt),
-                order.status,
-                button
-            ];
-            let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
-            // Establecer el atributo data-id en la fila
-            addedRow.setAttribute('data-id', order.id);
+            // Enviar solicitud AJAX
+            $.ajax({
+                url: $(form).attr('action'), // Utiliza la ruta del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
+                data: $(form).serialize(), // Utiliza los datos del formulario
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        confirmButtonColor: '#1e88e5',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            let dataTable = $('#DataTable').DataTable({
+                "ordering": false,
+                "searching": false,
+                "info": false,
+                "paginate": false,
+            });
         });
-    }
-</script>
+
+        function fillTable(data) {
+            data.forEach(function (order) {
+                let button = `
+                    <div class='d-flex flex-row justify-content-center'>
+                        <button name="btnConfirm" type='button' class='btn btn-danger mr-2' onclick="confirmObj(${order.id})"><i class="bi bi-check"></i></button>
+                    </div>`;
+                let row = [
+                    order.address,
+                    createDateWithTime(order.createdAt),
+                    order.status,
+                    button
+                ];
+                let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
+                // Establecer el atributo data-id en la fila
+                addedRow.setAttribute('data-id', order.id);
+            });
+        }
+    </script>
+}
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
