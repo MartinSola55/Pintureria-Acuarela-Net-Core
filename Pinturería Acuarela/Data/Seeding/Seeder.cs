@@ -31,7 +31,7 @@ namespace Pinturería_Acuarela.Data.Seeding
                 // Crear usuarios
                 ApplicationUser user = new()
                 {
-                    UserName = _config["UserName"],
+                    UserName = _config["UserEmail"],
                     Email = _config["UserEmail"],
                     EmailConfirmed = true,
                     BusinessID = 1,
