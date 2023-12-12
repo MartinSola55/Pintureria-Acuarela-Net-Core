@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Pinturería_Acuarela</RootNamespace>
+    <RootNamespace>Pintureria_Acuarela</RootNamespace>
     <UserSecretsId>4b23f71b-e605-4287-8424-df38c5654129</UserSecretsId>
   </PropertyGroup>
 

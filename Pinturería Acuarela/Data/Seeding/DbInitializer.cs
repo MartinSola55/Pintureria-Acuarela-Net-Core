@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Seeding
+namespace Pintureria_Acuarela.Data.Seeding
 {
     public class DbInitializer
     {

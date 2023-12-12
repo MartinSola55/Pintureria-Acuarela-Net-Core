@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Models;
 using System.Data.Common;
 using System.Reflection.Emit;
 
-namespace Pinturería_Acuarela.Data.Seeding
+namespace Pintureria_Acuarela.Data.Seeding
 {
     public class Seeder(ApplicationDbContext db, IConfiguration config, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : ISeeder
     {

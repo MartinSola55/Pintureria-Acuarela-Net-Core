@@ -1,4 +1,4 @@
-﻿namespace Pinturería_Acuarela.Models.ViewModels.Home
+﻿namespace Pintureria_Acuarela.Models.ViewModels.Home
 {
     public class IndexViewModel
     {

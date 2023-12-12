@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Mono.TextTemplating;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
-using Pinturería_Acuarela.Models.ViewModels.Orders;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
+using Pintureria_Acuarela.Models.ViewModels.Orders;
 using System.Linq.Expressions;
 using System.Net;
 
-namespace Pinturería_Acuarela.Controllers
+namespace Pintureria_Acuarela.Controllers
 {
     [Authorize]
     public class OrdersController(IWorkContainer workContainer) : Controller

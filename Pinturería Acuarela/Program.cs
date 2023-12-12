@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Data;
-using Pinturería_Acuarela.Data.Repository;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Data.Seeding;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data;
+using Pintureria_Acuarela.Data.Repository;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Data.Seeding;
+using Pintureria_Acuarela.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

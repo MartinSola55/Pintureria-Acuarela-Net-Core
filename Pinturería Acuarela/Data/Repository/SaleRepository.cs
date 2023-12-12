@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Repository
+namespace Pintureria_Acuarela.Data.Repository
 {
     public class SaleRepository(ApplicationDbContext db) : Repository<Sale>(db), ISaleRepository
     {

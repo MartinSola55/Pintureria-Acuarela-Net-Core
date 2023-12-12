@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Repository.IRepository
+namespace Pintureria_Acuarela.Data.Repository.IRepository
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Pinturería_Acuarela.Models.ViewModels.Products
+namespace Pintureria_Acuarela.Models.ViewModels.Products
 {
     public class IndexViewModel
     {

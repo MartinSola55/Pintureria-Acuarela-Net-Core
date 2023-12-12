@@ -1,4 +1,4 @@
-﻿namespace Pinturería_Acuarela.Data.Seeding
+﻿namespace Pintureria_Acuarela.Data.Seeding
 {
     public interface ISeeder
     {

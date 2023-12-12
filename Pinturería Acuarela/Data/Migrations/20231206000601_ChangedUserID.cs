@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Pinturería_Acuarela.Migrations
+namespace Pintureria_Acuarela.Migrations
 {
     /// <inheritdoc />
     public partial class ChangedUserID : Migration

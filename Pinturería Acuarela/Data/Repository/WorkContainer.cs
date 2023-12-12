@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Pinturería_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Data.Repository.IRepository;
 
-namespace Pinturería_Acuarela.Data.Repository
+namespace Pintureria_Acuarela.Data.Repository
 {
     public class WorkContainer : IWorkContainer
     {

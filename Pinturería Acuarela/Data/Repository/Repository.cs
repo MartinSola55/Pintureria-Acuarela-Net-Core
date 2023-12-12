@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Data.Repository.IRepository;
 
-namespace Pinturería_Acuarela.Data.Repository
+namespace Pintureria_Acuarela.Data.Repository
 {
     public class Repository<T>(DbContext context) : IRepository<T> where T : class
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Pinturería_Acuarela.Models.ViewModels.Stats
+namespace Pintureria_Acuarela.Models.ViewModels.Stats
 {
     public class IndexViewModel
     {

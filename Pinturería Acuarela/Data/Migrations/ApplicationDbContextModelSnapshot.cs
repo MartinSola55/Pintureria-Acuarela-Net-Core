@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Pinturería_Acuarela.Data;
+using Pintureria_Acuarela.Data;
 
 #nullable disable
 
-namespace Pinturería_Acuarela.Migrations
+namespace Pintureria_Acuarela.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -229,7 +229,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Brand", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Brand", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -276,7 +276,7 @@ namespace Pinturería_Acuarela.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Business", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Business", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -315,7 +315,7 @@ namespace Pinturería_Acuarela.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Capacity", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Capacity", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -367,7 +367,7 @@ namespace Pinturería_Acuarela.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Category", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Category", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -411,7 +411,7 @@ namespace Pinturería_Acuarela.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Color", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Color", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -433,7 +433,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("Colors");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Order", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Order", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -464,7 +464,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Product", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Product", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -518,7 +518,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductBusiness", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductBusiness", b =>
                 {
                     b.Property<long>("ProductID")
                         .HasColumnType("bigint");
@@ -545,7 +545,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("ProductsBusiness");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductOrder", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductOrder", b =>
                 {
                     b.Property<long>("ProductID")
                         .HasColumnType("bigint");
@@ -574,7 +574,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("ProductsOrder");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductSale", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductSale", b =>
                 {
                     b.Property<long>("ProductID")
                         .HasColumnType("bigint");
@@ -595,7 +595,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("ProductsSale");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Sale", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Sale", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -618,7 +618,7 @@ namespace Pinturería_Acuarela.Migrations
                     b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Subcategory", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Subcategory", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -702,7 +702,7 @@ namespace Pinturería_Acuarela.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -765,9 +765,9 @@ namespace Pinturería_Acuarela.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Order", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Order", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.ApplicationUser", "User")
+                    b.HasOne("Pintureria_Acuarela.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -776,27 +776,27 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Product", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Product", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.Brand", "Brand")
+                    b.HasOne("Pintureria_Acuarela.Models.Brand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pinturería_Acuarela.Models.Capacity", "Capacity")
+                    b.HasOne("Pintureria_Acuarela.Models.Capacity", "Capacity")
                         .WithMany()
                         .HasForeignKey("CapacityID");
 
-                    b.HasOne("Pinturería_Acuarela.Models.Category", "Category")
+                    b.HasOne("Pintureria_Acuarela.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID");
 
-                    b.HasOne("Pinturería_Acuarela.Models.Color", "Color")
+                    b.HasOne("Pintureria_Acuarela.Models.Color", "Color")
                         .WithMany()
                         .HasForeignKey("ColorID");
 
-                    b.HasOne("Pinturería_Acuarela.Models.Subcategory", "Subcategory")
+                    b.HasOne("Pintureria_Acuarela.Models.Subcategory", "Subcategory")
                         .WithMany()
                         .HasForeignKey("SubcategoryID");
 
@@ -811,15 +811,15 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("Subcategory");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductBusiness", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductBusiness", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.Business", "Business")
+                    b.HasOne("Pintureria_Acuarela.Models.Business", "Business")
                         .WithMany()
                         .HasForeignKey("BusinessID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pinturería_Acuarela.Models.Product", "Product")
+                    b.HasOne("Pintureria_Acuarela.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -830,19 +830,19 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductOrder", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductOrder", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.Business", "Business")
+                    b.HasOne("Pintureria_Acuarela.Models.Business", "Business")
                         .WithMany()
                         .HasForeignKey("BusinessID");
 
-                    b.HasOne("Pinturería_Acuarela.Models.Order", null)
+                    b.HasOne("Pintureria_Acuarela.Models.Order", null)
                         .WithMany("Products")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pinturería_Acuarela.Models.Product", "Product")
+                    b.HasOne("Pintureria_Acuarela.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -853,15 +853,15 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ProductSale", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ProductSale", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.Product", "Product")
+                    b.HasOne("Pintureria_Acuarela.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pinturería_Acuarela.Models.Sale", "Sale")
+                    b.HasOne("Pintureria_Acuarela.Models.Sale", "Sale")
                         .WithMany("Products")
                         .HasForeignKey("SaleID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -872,9 +872,9 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("Sale");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("Pinturería_Acuarela.Models.Business", "Business")
+                    b.HasOne("Pintureria_Acuarela.Models.Business", "Business")
                         .WithMany()
                         .HasForeignKey("BusinessID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -883,12 +883,12 @@ namespace Pinturería_Acuarela.Migrations
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Order", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Order", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Pinturería_Acuarela.Models.Sale", b =>
+            modelBuilder.Entity("Pintureria_Acuarela.Models.Sale", b =>
                 {
                     b.Navigation("Products");
                 });

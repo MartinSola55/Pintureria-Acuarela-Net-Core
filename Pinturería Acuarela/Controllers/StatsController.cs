@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
-using Pinturería_Acuarela.Models.ViewModels.Stats;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
+using Pintureria_Acuarela.Models.ViewModels.Stats;
 using System.Dynamic;
 using System.Linq.Expressions;
 
-namespace Pinturería_Acuarela.Controllers
+namespace Pintureria_Acuarela.Controllers
 {
     [Authorize(Roles = Constants.Admin)]
     public class StatsController(IWorkContainer workContainer) : Controller

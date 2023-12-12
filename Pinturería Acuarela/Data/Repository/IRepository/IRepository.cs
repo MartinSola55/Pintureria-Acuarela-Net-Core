@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pinturería_Acuarela.Data.Repository.IRepository
+namespace Pintureria_Acuarela.Data.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {

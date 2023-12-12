@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Repository
+namespace Pintureria_Acuarela.Data.Repository
 {
     public class ApplicationUserRepository(ApplicationDbContext db) : Repository<ApplicationUser>(db), IApplicationUserRepository
     {

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Models;
 
 namespace Optica_Gaido.Areas.Identity.Pages.Account
 {

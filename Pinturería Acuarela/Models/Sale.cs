@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Pinturería_Acuarela.Models;
+namespace Pintureria_Acuarela.Models;
 
 public partial class Sale
 {

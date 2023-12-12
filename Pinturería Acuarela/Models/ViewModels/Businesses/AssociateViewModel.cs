@@ -1,4 +1,4 @@
-﻿namespace Pinturería_Acuarela.Models.ViewModels.Businesses
+﻿namespace Pintureria_Acuarela.Models.ViewModels.Businesses
 {
     public class AssociateViewModel
     {

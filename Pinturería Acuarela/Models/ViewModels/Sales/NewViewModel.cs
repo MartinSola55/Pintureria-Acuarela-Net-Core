@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Pinturería_Acuarela.Models.ViewModels.Sales
+namespace Pintureria_Acuarela.Models.ViewModels.Sales
 {
     public class NewViewModel
     {

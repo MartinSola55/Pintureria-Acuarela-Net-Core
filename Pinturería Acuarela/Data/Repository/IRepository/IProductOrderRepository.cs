@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Repository.IRepository
+namespace Pintureria_Acuarela.Data.Repository.IRepository
 {
     public interface IProductOrderRepository : IRepository<ProductOrder>
     {

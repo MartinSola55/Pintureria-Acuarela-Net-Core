@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models.ViewModels.Brands;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models.ViewModels.Brands;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Controllers
+namespace Pintureria_Acuarela.Controllers
 {
     [Authorize(Roles = Constants.Admin)]
     public class BrandsController(IWorkContainer workContainer) : Controller

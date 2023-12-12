@@ -1,4 +1,4 @@
-namespace Pinturería_Acuarela.Models
+namespace Pintureria_Acuarela.Models
 {
     public class ErrorViewModel
     {

@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
-using Pinturería_Acuarela.Models.ViewModels.Home;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
+using Pintureria_Acuarela.Models.ViewModels.Home;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-namespace Pinturería_Acuarela.Controllers
+namespace Pintureria_Acuarela.Controllers
 {
     [Authorize]
     public class HomeController(IWorkContainer workContainer, IConfiguration config, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) : Controller

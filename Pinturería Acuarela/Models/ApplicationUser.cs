@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Pinturería_Acuarela.Models
+namespace Pintureria_Acuarela.Models
 {
     public partial class ApplicationUser : IdentityUser
     {

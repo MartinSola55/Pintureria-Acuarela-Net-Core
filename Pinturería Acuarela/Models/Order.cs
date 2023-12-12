@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Pinturería_Acuarela.Models;
+namespace Pintureria_Acuarela.Models;
 
 public partial class Order
 {

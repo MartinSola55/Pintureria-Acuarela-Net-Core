@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Data.Seeding;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data.Seeding;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data
+namespace Pintureria_Acuarela.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
     {

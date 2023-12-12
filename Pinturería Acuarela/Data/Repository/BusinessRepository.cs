@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Pinturería_Acuarela.Data.Repository.IRepository;
-using Pinturería_Acuarela.Models;
+using Pintureria_Acuarela.Data.Repository.IRepository;
+using Pintureria_Acuarela.Models;
 
-namespace Pinturería_Acuarela.Data.Repository
+namespace Pintureria_Acuarela.Data.Repository
 {
     public class BusinessRepository(ApplicationDbContext db) : Repository<Business>(db), IBusinessRepository
     {
