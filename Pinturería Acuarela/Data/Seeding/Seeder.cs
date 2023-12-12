@@ -31,12 +31,12 @@ namespace Pinturería_Acuarela.Data.Seeding
                 // Crear usuarios
                 ApplicationUser user = new()
                 {
-                    UserName = _config["User:Name"],
-                    Email = _config["User:Email"],
+                    UserName = _config["UserName"],
+                    Email = _config["UserEmail"],
                     EmailConfirmed = true,
                     BusinessID = 1,
                 };
-                _userManager.CreateAsync(user, _config["User:Password"]).GetAwaiter().GetResult();
+                _userManager.CreateAsync(user, _config["UserPassword"]).GetAwaiter().GetResult();
 
                 ApplicationUser newUser = _db.User.Where(u => u.UserName.Equals(user.UserName)).FirstOrDefault();
 
