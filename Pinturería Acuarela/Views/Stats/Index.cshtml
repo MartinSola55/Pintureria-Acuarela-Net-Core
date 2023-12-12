@@ -31,7 +31,62 @@
     <!-- Start Page Content -->
     <!-- ============================================================== -->
     <div class="row">
-
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-sm-row justify-content-start align-items-center">
+                        <h4 class="card-title mr-2 mb-2">10 productos más vendidos</h4>
+                        @Html.DropDownList("mostSoldProductsYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                        <select id="mostSoldProductsMonth" class="form-control mb-2" style="max-width: fit-content">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                        <h4 class="card-title mx-2 mb-2">&nbsp;Sucursal:</h4>
+                        @Html.DropDownList("mostSoldProductsBusinesses", Model.Businesses, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                    </div>
+                    <ul class="list-inline text-right" id="productsSoldChart"></ul>
+                    <div id="morris-productsSold-bar-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-sm-row justify-content-start align-items-center">
+                        <h4 class="card-title mr-2 mb-2">10 productos más pedidos</h4>
+                        @Html.DropDownList("mostOrderedProductsYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                        <select id="mostOrderedProductsMonth" class="form-control mb-2" style="max-width: fit-content">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                        <h4 class="card-title mx-2 mb-2">&nbsp;Sucursal:</h4>
+                        @Html.DropDownList("mostOrderedProductsBusinesses", Model.Businesses, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
+                    </div>
+                    <ul class="list-inline text-right" id="productsOrderedChart"></ul>
+                    <div id="morris-productsOrdered-bar-chart"></div>
+                </div>
+            </div>
+        </div>
         <div class="col-12 col-lg-6">
             <div class="card shadow">
                 <div class="card-body">
@@ -81,56 +136,100 @@
 
 <script>
     const colors = [
-    '#ff5b51', '#2f3d4a', '#00b19d', '#ffbc34', '#f62d51', '#59de68', '#009efb',
+    '#ff5b51', '#2f3d4a', '#5e0153', '#ffbc34', '#f62d51', '#59de68', '#009efb',
     '#7460ee', '#00bcd4', '#2ec492', '#b02745', '#0013477', '#6f3575',
     '#795548', '#4ab1c3', '#dc3939', '#009688', '#4ec052', '#2d3242', '#ff9800'];
     const reversedColors = colors.slice().reverse();
     let currentDate = new Date().toLocaleString("en-US", { timeZone: "America/Argentina/Buenos_Aires" });
     $("#monthlySalesMonth").val(new Date(currentDate).getMonth() + 1);
+    $("#mostSoldProductsMonth").val(new Date(currentDate).getMonth() + 1);
+    $("#mostOrderedProductsMonth").val(new Date(currentDate).getMonth() + 1);
     $("select").css("cursor", "pointer");
 </script>
 
-@*Cambiar gráfico anual*@
+@*Cambiar gráficos*@
 <script>
+    // Ventas anuales
     $("#annualSalesYear").on("change", function () {
         let data = { yearString: $(this).val(), businessID: $("#annualSalesBusiness").val() }
-        sendForm("Annual", data);
+        sendForm("AnnualSales", data);
     });
 
     $("#annualSalesBusiness").on("change", function () {
         let data = { yearString: $("#annualSalesYear").val(), businessID: $(this).val() }
-        sendForm("Annual", data);
+        sendForm("AnnualSales", data);
     });
 
+    // Ventas mensuales
     $("#monthlySalesYear").on("change", function () {
         let data = { yearString: $(this).val(), monthString: $("#monthlySalesMonth").val(), businessID: $("#monthlySalesBusinesses").val() }
-        sendForm("Monthly", data);
+        sendForm("MonthlySales", data);
     });
 
     $("#monthlySalesMonth").on("change", function () {
         let data = { yearString: $("#monthlySalesYear").val(), monthString: $(this).val(), businessID: $("#monthlySalesBusinesses").val() }
-        sendForm("Monthly", data);
+        sendForm("MonthlySales", data);
     });
 
     $("#monthlySalesBusinesses").on("change", function () {
         let data = { yearString: $("#monthlySalesYear").val(), monthString: $("#monthlySalesMonth").val(), businessID: $(this).val() }
-        sendForm("Monthly", data);
+        sendForm("MonthlySales", data);
+    });
+
+    // Productos más vendidos
+    $("#mostSoldProductsYear").on("change", function () {
+        let data = { yearString: $(this).val(), monthString: $("#mostSoldProductsMonth").val(), businessID: $("#mostSoldProductsBusinesses").val() }
+        sendForm("MostSoldProducts", data);
+    });
+
+    $("#mostSoldProductsMonth").on("change", function () {
+        let data = { yearString: $("#mostSoldProductsYear").val(), monthString: $(this).val(), businessID: $("#mostSoldProductsBusinesses").val() }
+        sendForm("MostSoldProducts", data);
+    });
+
+    $("#mostSoldProductsBusinesses").on("change", function () {
+        let data = { yearString: $("#mostSoldProductsYear").val(), monthString: $("#mostSoldProductsMonth").val(), businessID: $(this).val() }
+        sendForm("MostSoldProducts", data);
+    });
+
+    // Productos más pedidos
+    $("#mostOrderedProductsYear").on("change", function () {
+        let data = { yearString: $(this).val(), monthString: $("#mostOrderedProductsMonth").val(), businessID: $("#mostOrderedProductsBusinesses").val() }
+        sendForm("MostOrderedProducts", data);
+    });
+
+    $("#mostOrderedProductsMonth").on("change", function () {
+        let data = { yearString: $("#mostOrderedProductsYear").val(), monthString: $(this).val(), businessID: $("#mostOrderedProductsBusinesses").val() }
+        sendForm("MostOrderedProducts", data);
+    });
+
+    $("#mostOrderedProductsBusinesses").on("change", function () {
+        let data = { yearString: $("#mostOrderedProductsYear").val(), monthString: $("#mostOrderedProductsMonth").val(), businessID: $(this).val() }
+        sendForm("MostOrderedProducts", data);
     });
 
     function sendForm(type, data) {
         $.ajax({
-            url: `/Stats/Get${type}Sales`,
+            url: `/Stats/Get${type}`,
             method: "GET",
             data: data,
             success: function (response) {
                 switch (type) {
-                    case "Annual":
+                    case "AnnualSales":
                         deleteAnnualGraph();
                         createAnnualGraph(response.data);
                         break;
-                    case "Monthly":
+                    case "MonthlySales":
                         deleteMonthlyGraph();
                         createMonthlyGraph(response.data);
+                        break;
+                    case "MostSoldProducts":
+                        deleteMostSoldProductsGraph();
+                        createMostSoldProductsGraph(response.data);
+                        break;
+                    case "MostOrderedProducts":
+                        deleteMostOrderedProductsGraph();
+                        createMostOrderedProductsGraph(response.data);
                         break;
                     default:
                         break;
@@ -202,5 +301,83 @@
     
     function deleteMonthlyGraph() {
         $("#morris-area-chart").empty();
+    }
+</script>
+
+@*Gráfico de barras productos mas vendidos*@
+<script>
+    let productsSold = @(Json.Serialize(Model.MostSoldProducts)).value.data;
+
+    createMostSoldProductsGraph(productsSold);
+
+    function createMostSoldProductsGraph(data) {
+
+        let products = Object.keys(data).filter(key => key !== 'period');
+
+        let content = "";
+        let i = 0;
+        products.forEach(product => {
+            content += `
+                <li>
+                    <h5><i class="fa fa-circle m-r-5" style='color: ${colors[i]}'></i>${product}</h5>
+                </li>`;
+            i++;
+        });
+        $("#productsSoldChart").html(content);
+
+        Morris.Bar({
+            element: 'morris-productsSold-bar-chart',
+            data: [data],
+            xkey: "period",
+            ykeys: products,
+            labels: products,
+            barColors: colors,
+            hideHover: 'auto',
+            gridLineColor: '#eef0f2',
+            resize: true
+        });
+    }
+
+    function deleteMostSoldProductsGraph() {
+        $("#morris-productsSold-bar-chart").empty();
+    }
+</script>
+
+@*Gráfico de barras productos mas pedidos*@
+<script>
+    let productsOrdered = @(Json.Serialize(Model.MostOrderedProducts)).value.data;
+
+    createMostOrderedProductsGraph(productsOrdered);
+
+    function createMostOrderedProductsGraph(data) {
+
+        let products = Object.keys(data).filter(key => key !== 'period');
+
+        let content = "";
+        let i = 0;
+        products.forEach(product => {
+            content += `
+                    <li>
+                        <h5><i class="fa fa-circle m-r-5" style='color: ${colors[i]}'></i>${product}</h5>
+                    </li>`;
+            i++;
+        });
+        $("#productsOrderedChart").html(content);
+
+        Morris.Bar({
+            element: 'morris-productsOrdered-bar-chart',
+            data: [data],
+            xkey: "period",
+            ykeys: products,
+            labels: products,
+            barColors: colors,
+            hideHover: 'auto',
+            gridLineColor: '#eef0f2',
+            resize: true
+        });
+    }
+
+    function deleteMostOrderedProductsGraph() {
+        $("#morris-productsOrdered-bar-chart").empty();
     }
 </script>

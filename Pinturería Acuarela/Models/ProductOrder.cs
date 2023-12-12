@@ -23,6 +23,8 @@ public partial class ProductOrder
 
     public long? BusinessID { get; set; }
 
+    public virtual Order Order { get; set; } = null!;
+
     public virtual Business Business { get; set; } = null!;
 
     public virtual Product Product { get; set; } = null!;

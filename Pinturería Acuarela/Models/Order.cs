@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Pinturería_Acuarela.Models;
 
@@ -25,5 +26,6 @@ public partial class Order
 
     public virtual ApplicationUser User { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<ProductOrder> Products { get; set; } = null!;
 }

@@ -26,6 +26,8 @@ namespace Pinturería_Acuarela.Controllers
                     MonthlySales = this.GetMonthlySales(today.Year.ToString(), today.Month.ToString(), null),
                     Years = _workContainer.Sale.GetYears(),
                     Businesses = _workContainer.Business.GetDropDownList(),
+                    MostSoldProducts = this.GetMostSoldProducts(today.Year.ToString(), today.Month.ToString(), null),
+                    MostOrderedProducts = this.GetMostOrderedProducts(today.Year.ToString(), today.Month.ToString(), null),
                 };
 
                 return View(viewModel);
@@ -85,7 +87,6 @@ namespace Pinturería_Acuarela.Controllers
             });
         }
 
-
         [HttpGet]
         public JsonResult GetMonthlySales(string yearString, string monthString, long? businessID)
         {
@@ -137,6 +138,96 @@ namespace Pinturería_Acuarela.Controllers
             {
                 success = true,
                 data = monthlySales,
+            });
+        }
+
+        [HttpGet]
+        public JsonResult GetMostSoldProducts(string yearString, string monthString, long? businessID)
+        {
+            Expression<Func<ProductSale, bool>> filter;
+            if (businessID == null)
+            {
+                filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.CreatedAt.Month.ToString() == monthString;
+            }
+            else
+            {
+                filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.CreatedAt.Month.ToString() == monthString && sale.Sale.User.BusinessID == businessID;
+            }
+            IEnumerable<ProductSale> allSales = _workContainer.ProductSale.GetAll(filter, includeProperties: "Sale, Product");
+
+            var mostSoldProducts = allSales
+                .GroupBy(sale => sale.ProductID)
+                .Select(group => new
+                {
+                    productID = group.Key,
+                    product = group.First().Product.Description,
+                    sold = group.Sum(x => x.Quantity)
+                })
+                .ToList();
+
+            // Limitar la cantidad de productos a 10
+            mostSoldProducts = mostSoldProducts
+                .OrderByDescending(entry => entry.sold)
+                .Take(10)
+                .ToList();
+
+            dynamic dataObject = new ExpandoObject();
+            dataObject.period = yearString;
+
+            foreach (var item in mostSoldProducts)
+            {
+                ((IDictionary<string, object>)dataObject)[item.product] = item.sold;
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = dataObject
+            });
+        }
+        
+        [HttpGet]
+        public JsonResult GetMostOrderedProducts(string yearString, string monthString, long? businessID)
+        {
+            Expression<Func<ProductOrder, bool>> filter;
+            if (businessID == null)
+            {
+                filter = order => order.Order.CreatedAt.Year.ToString() == yearString && order.Order.CreatedAt.Month.ToString() == monthString;
+            }
+            else
+            {
+                filter = order => order.Order.CreatedAt.Year.ToString() == yearString && order.Order.CreatedAt.Month.ToString() == monthString && order.Order.User.BusinessID == businessID;
+            }
+            IEnumerable<ProductOrder> allOrders = _workContainer.ProductOrder.GetAll(filter, includeProperties: "Order, Product");
+
+            var mostSoldProducts = allOrders
+                .GroupBy(order => order.ProductID)
+                .Select(group => new
+                {
+                    productID = group.Key,
+                    product = group.First().Product.Description,
+                    sold = group.Sum(x => x.Quantity)
+                })
+                .ToList();
+
+            // Limitar la cantidad de productos a 10
+            mostSoldProducts = mostSoldProducts
+                .OrderByDescending(entry => entry.sold)
+                .Take(10)
+                .ToList();
+
+            dynamic dataObject = new ExpandoObject();
+            dataObject.period = yearString;
+
+            foreach (var item in mostSoldProducts)
+            {
+                ((IDictionary<string, object>)dataObject)[item.product] = item.sold;
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = dataObject
             });
         }
     }
