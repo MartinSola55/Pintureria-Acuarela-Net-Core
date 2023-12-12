@@ -30,10 +30,30 @@ namespace Pinturería_Acuarela.Data.Seeding
 
             modelBuilder.Entity<Capacity>().HasData(
                 new Capacity() { ID = 1, Volume = 1, Description = "1 Litro" },
-                new Capacity() { ID = 2, Volume = 3/4, Description = "3/4 Litro" },
-                new Capacity() { ID = 3, Volume = 1/2, Description = "1/2 Litro" },
-                new Capacity() { ID = 4, Volume = 1/4, Description = "1/4 Litro" },
-                new Capacity() { ID = 5, Volume = 20, Description = "20 Litros" }
+                new Capacity() { ID = 2, Volume = 0.75f, Description = "3/4 Litro" },
+                new Capacity() { ID = 3, Volume = 0.5f, Description = "1/2 Litro" },
+                new Capacity() { ID = 4, Volume = 0.25f, Description = "1/4 Litro" },
+                new Capacity() { ID = 5, Volume = 20, Description = "20 Litros" },
+                new Capacity() { ID = 6, Volume = 4, Description = "4 Litros" },
+                new Capacity() { ID = 7, Volume = 10, Description = "10 Litros" },
+                new Capacity() { ID = 8, Volume = 16, Description = "16 Litros" },
+                new Capacity() { ID = 9, Volume = 32, Description = "32 Litros" },
+                new Capacity() { ID = 10, Volume = 0.44f, Description = "440 cc" },
+                new Capacity() { ID = 11, Volume = 0.25f, Description = "250 cc" },
+                new Capacity() { ID = 12, Volume = 0.12f, Description = "120 cc" },
+                new Capacity() { ID = 13, Volume = 0.03f, Description = "30 cc" },
+                new Capacity() { ID = 14, Volume = 2, Description = "2 Litros" },
+                new Capacity() { ID = 15, Volume = 2.5f, Description = "2.5 Litros" },
+                new Capacity() { ID = 16, Volume = 24, Description = "24 Litros" },
+                new Capacity() { ID = 17, Volume = 25, Description = "25 Litros" },
+                new Capacity() { ID = 18, Volume = 5, Description = "5 Litros" },
+                new Capacity() { ID = 19, Volume = 6, Description = "6 Litros" },
+                new Capacity() { ID = 20, Volume = 30, Description = "30 Litros" },
+                new Capacity() { ID = 21, Volume = 36, Description = "36 Litros" },
+                new Capacity() { ID = 22, Volume = 40, Description = "40 Litros" },
+                new Capacity() { ID = 23, Volume = 0.06f, Description = "60 cc" },
+                new Capacity() { ID = 24, Volume = 0.3f, Description = "300 gramos" },
+                new Capacity() { ID = 25, Volume = 0.6f, Description = "600 gramos" }
             );
 
             modelBuilder.Entity<Category>().HasData(
@@ -43,13 +63,6 @@ namespace Pinturería_Acuarela.Data.Seeding
                 new Category() { ID = 4, Description = "Linea Diluyentes" },
                 new Category() { ID = 5, Description = "Linea Autopolish" }
             );
-
-            //modelBuilder.Entity<Color>().HasData(
-            //    new Color() { ID = 1, Name = "Rojo", Hex = "#ff0000" },
-            //    new Color() { ID = 2, Name = "Negro", Hex = "#000000" },
-            //    new Color() { ID = 3, Name = "Verde", Hex = "#00ff00" },
-            //    new Color() { ID = 3, Name = "Amarillo", Hex = "#eeff00" }
-            //);
 
             modelBuilder.Entity<Subcategory>().HasData(
                 new Subcategory() { ID = 1, Description = "Sintéticos" },
