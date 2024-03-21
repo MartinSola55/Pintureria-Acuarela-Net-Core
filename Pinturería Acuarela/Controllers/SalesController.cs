@@ -37,12 +37,12 @@ namespace Pintureria_Acuarela.Controllers
                 if (_workContainer.ApplicationUser.GetRole(user.Id).Name == Constants.Admin)
                 {
                     Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
-                    viewModel.Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Products, Products.Product").OrderByDescending(x => x.CreatedAt);
+                    viewModel.Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Products, Products.Product, Products.Product.Capacity").OrderByDescending(x => x.CreatedAt);
                 }
                 else
                 {
                     Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && sale.User.BusinessID == user.BusinessID ;
-                    viewModel.Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Products, Products.Product").OrderByDescending(x => x.CreatedAt);
+                    viewModel.Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Products, Products.Product, Products.Product.Capacity").OrderByDescending(x => x.CreatedAt);
                 }
                 return View(viewModel);
             }

@@ -61,7 +61,7 @@
                                             <ul class="mb-0">
                                                 @foreach (var product in item.Products)
                                                 {
-                                                    <li>@product.Product.Description: @product.Quantity u.</li>
+                                                    <li>#@product.Product.ID @product.Product.Description - @product.Product.Capacity.Description: @product.Quantity u.</li>
                                                 }
                                             </ul>
                                         </td>
