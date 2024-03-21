@@ -63,6 +63,7 @@
                                     <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
+                                    <th>Capacidad</th>
                                     <th>Stock</th>
                                     <th>Editar stock</th>
                                 </tr>
@@ -74,6 +75,7 @@
                                         <td>@Html.DisplayFor(c => item.Product.InternalCode)</td>
                                         <td>@Html.DisplayFor(c => item.Product.Description)</td>
                                         <td>@Html.DisplayFor(c => item.Product.Brand.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.Product.Capacity.Description)</td>
                                         <td>@Html.DisplayFor(c => item.Stock)</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))'><i class="bi bi-pencil"></i></button>

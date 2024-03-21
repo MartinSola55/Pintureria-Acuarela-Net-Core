@@ -51,7 +51,7 @@ namespace Pintureria_Acuarela.Controllers
                         {
                             success = false,
                             title = "Error al crear el producto",
-                            message = "Ya existe uno con la misma descripción o código interno",
+                            message = "Ya existe uno con el mismo código interno",
                         });
                     }   
                     product.CreateViewModel.CreatedAt = DateTime.UtcNow.AddHours(-3);

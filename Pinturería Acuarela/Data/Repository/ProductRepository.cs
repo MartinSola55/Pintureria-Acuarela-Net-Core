@@ -31,8 +31,7 @@ namespace Pintureria_Acuarela.Data.Repository
         public bool IsDuplicated(Product product)
         {
             var dbObject = _db.Products.FirstOrDefault(x => 
-            (x.InternalCode.ToLower() == product.InternalCode.ToLower() || 
-            x.Description.ToLower() == product.Description.ToLower())
+            (x.InternalCode.ToLower() == product.InternalCode.ToLower())
             && x.ID != product.ID);
             return dbObject != null;
         }
