@@ -246,7 +246,7 @@
                 <td>${entity.product.internalCode}</td>
                 <td>${entity.product.description}</td>
                 <td>${entity.product.brand.name}</td>
-                <td>${entity.product.capacity.description}</td>
+                <td>${(entity.product.capacity && entity.product.capacity.description) || ""}</td>
                 <td>${entity.stock}</td>
                 <td>${cantidad}</td>
                 <td>
@@ -268,7 +268,7 @@
                 <td>${entity.product.internalCode}</td>
                 <td>${entity.product.description}</td>
                 <td>${entity.product.brand.name}</td>
-                <td>${entity.product.capacity.description}</td>
+                <td>${(entity.product.capacity && entity.product.capacity.description) || ""}</td>
                 <td>${entity.stock}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>
