@@ -86,7 +86,7 @@ namespace Pintureria_Acuarela.Controllers
             try
             {
                 Expression<Func<Order, bool>> filter = order => order.ID == id;
-                Order order = _workContainer.Order.GetFirstOrDefault(filter, includeProperties: "Products, Products.Product, Products.Product.Brand");
+                Order order = _workContainer.Order.GetFirstOrDefault(filter, includeProperties: "Products, Products.Product, Products.Product.Brand, Products.Product.Capacity");
                 if (order == null)
                 {
                     return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "La orden no existe", ErrorCode = 404 });

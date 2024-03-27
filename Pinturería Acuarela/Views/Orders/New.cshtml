@@ -39,9 +39,10 @@
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
-                                    <th>Código</th>
+                                    <th>Capacidad</th>
                                     <th>Stock</th>
                                     <th class="text-center">Seleccionar</th>
                                 </tr>
@@ -50,9 +51,10 @@
                                 @foreach (var item in Model.Products)
                                 {
                                     <tr data-id="@item.ProductID">
+                                        <td>@item.Product.InternalCode</td>
                                         <td>@item.Product.Description</td>
                                         <td>@item.Product.Brand.Name</td>
-                                        <td>@item.Product.InternalCode</td>
+                                        <td>@(item.Product.Capacity != null ? item.Product.Capacity.Description : "")</td>
                                         <td>@item.Stock</td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
@@ -79,9 +81,10 @@
                         <table id="productsSelected" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
-                                    <th>Código</th>
+                                    <th>Capacidad</th>
                                     <th>Stock</th>
                                     <th>Pedido</th>
                                     <th>Eliminar</th>
@@ -240,9 +243,10 @@
         let row = $('#DataTable').find(`tbody tr[data-id='${entity.productID}']`);
         let content = `
                 <tr data-id="${entity.productID}" data-quantity="${cantidad}">
+                <td>${entity.product.internalCode}</td>
                 <td>${entity.product.description}</td>
                 <td>${entity.product.brand.name}</td>
-                <td>${entity.product.internalCode}</td>
+                <td>${(entity.product.capacity && entity.product.capacity.description) || ""}</td>
                 <td>${entity.stock}</td>
                 <td>${cantidad}</td>
                 <td>
@@ -261,9 +265,10 @@
         let row = $('#productsSelected').find(`tbody tr[data-id='${entity.productID}']`);
         let content = `
                 <tr data-id="${entity.productID}">
+                <td>${entity.product.internalCode}</td>
                 <td>${entity.product.description}</td>
                 <td>${entity.product.brand.name}</td>
-                <td>${entity.product.internalCode}</td>
+                <td>${(entity.product.capacity && entity.product.capacity.description) || ""}</td>
                 <td>${entity.stock}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>

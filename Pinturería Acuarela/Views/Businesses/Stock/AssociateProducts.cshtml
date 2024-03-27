@@ -61,6 +61,7 @@
                                     <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
+                                    <th>Capacidad</th>
                                     <th>Agregar</th>
                                 </tr>
                             </thead>
@@ -71,6 +72,7 @@
                                         <td>@Html.DisplayFor(c => item.InternalCode)</td>
                                         <td>@Html.DisplayFor(c => item.Description)</td>
                                         <td>@Html.DisplayFor(c => item.Brand.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.Capacity.Description)</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='associate(@Json.Serialize(item))'><i class="bi bi-plus-lg"></i></button>
                                         </td>

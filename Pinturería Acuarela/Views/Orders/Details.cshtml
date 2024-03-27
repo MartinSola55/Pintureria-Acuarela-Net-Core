@@ -64,9 +64,10 @@
                         <table id="DataTable" class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
-                                    <th>Código</th>
+                                    <th>Capacidad</th>
                                     <th>Cant. pedida</th>
                                     <th>Cant. enviada</th>
                                     @if (role == Constants.Admin)
@@ -79,9 +80,10 @@
                                 @foreach (var item in Model.Products)
                                 {
                                     <tr data-id="@item.ProductID">
+                                        <td>@item.Product.InternalCode</td>
                                         <td>@item.Product.Description</td>
                                         <td>@item.Product.Brand.Name</td>
-                                        <td>@item.Product.InternalCode</td>
+                                        <td>@(item.Product.Capacity != null ? item.Product.Capacity.Description : "")</td>
                                         <td>@item.Quantity</td>
                                         <td>@item.QuantitySend</td>
                                         @if (role == Constants.Admin)
