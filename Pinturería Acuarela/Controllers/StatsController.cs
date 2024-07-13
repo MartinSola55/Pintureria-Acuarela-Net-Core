@@ -147,10 +147,16 @@ namespace Pintureria_Acuarela.Controllers
             Expression<Func<ProductSale, bool>> filter;
             if (businessID == null)
             {
-                filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.CreatedAt.Month.ToString() == monthString;
+                if (string.IsNullOrEmpty(monthString))
+                    filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString;
+                else
+                    filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.CreatedAt.Month.ToString() == monthString;
             }
             else
             {
+                if (string.IsNullOrEmpty(monthString))
+                    filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.User.BusinessID == businessID;
+                else
                 filter = sale => sale.Sale.CreatedAt.Year.ToString() == yearString && sale.Sale.CreatedAt.Month.ToString() == monthString && sale.Sale.User.BusinessID == businessID;
             }
             IEnumerable<ProductSale> allSales = _workContainer.ProductSale.GetAll(filter, includeProperties: "Sale, Product");
@@ -192,10 +198,16 @@ namespace Pintureria_Acuarela.Controllers
             Expression<Func<ProductOrder, bool>> filter;
             if (businessID == null)
             {
+                if (string.IsNullOrEmpty(monthString))
+                    filter = order => order.Order.CreatedAt.Year.ToString() == yearString;
+                else
                 filter = order => order.Order.CreatedAt.Year.ToString() == yearString && order.Order.CreatedAt.Month.ToString() == monthString;
             }
             else
             {
+                if (string.IsNullOrEmpty(monthString))
+                    filter = order => order.Order.CreatedAt.Year.ToString() == yearString && order.Order.User.BusinessID == businessID;
+                else
                 filter = order => order.Order.CreatedAt.Year.ToString() == yearString && order.Order.CreatedAt.Month.ToString() == monthString && order.Order.User.BusinessID == businessID;
             }
             IEnumerable<ProductOrder> allOrders = _workContainer.ProductOrder.GetAll(filter, includeProperties: "Order, Product");

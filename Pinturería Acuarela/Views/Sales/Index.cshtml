@@ -48,6 +48,7 @@
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
+                                    <th>Sucursal</th>
                                     <th>Productos</th>
                                     <th>Eliminar</th>
                                 </tr>
@@ -57,6 +58,7 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
+                                        <td>@item.User.Business.Address</td>
                                         <td>
                                             <ul class="mb-0">
                                                 @foreach (var product in item.Products)

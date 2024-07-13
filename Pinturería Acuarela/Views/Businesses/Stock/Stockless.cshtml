@@ -60,6 +60,7 @@
                                     <th>Código</th>
                                     <th>Descripción</th>
                                     <th>Marca</th>
+                                    <th>Capacidad</th>
                                     <th>Stock mínimo</th>
                                     <th>Stock</th>
                                 </tr>
@@ -71,6 +72,14 @@
                                         <td>@Html.DisplayFor(c => item.Product.InternalCode)</td>
                                         <td>@Html.DisplayFor(c => item.Product.Description)</td>
                                         <td>@Html.DisplayFor(c => item.Product.Brand.Name)</td>
+                                        @if (item.Product.CapacityID != null)
+                                        {
+                                            <td>@Html.DisplayFor(c => item.Product.Capacity.Description)</td>
+                                        }
+                                        else
+                                        {
+                                            <td>-</td>
+                                        }
                                         <td>@Html.DisplayFor(c => item.MinimumStock)</td>
                                         <td>@Html.DisplayFor(c => item.Stock)</td>
                                     </tr>

@@ -24,7 +24,7 @@ namespace Pintureria_Acuarela.Data.Repository
 
         public IEnumerable<ProductBusiness> GetStocklessProducts(long businessID)
         {
-            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock == 0).Include(x => x.Product).Include(x => x.Product.Brand);
+            return _db.ProductsBusiness.Where(x => x.BusinessID.Equals(businessID) && x.Stock == 0).Include(x => x.Product).Include(x => x.Product.Brand).Include(x => x.Product.Capacity);
         }
 
         public IEnumerable<ProductBusiness> GetStocklessProducts()

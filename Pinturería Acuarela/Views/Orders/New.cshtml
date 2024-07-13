@@ -35,6 +35,8 @@
             <div class="card shadow">
                 <div class="card-body">
                     <h2 class="card-title mr-2">Seleccione los productos</h2>
+                    <input type="checkbox" id="showStockless" class="filled-in chk-col-green">
+                    <label id="showStocklessLabel" for="showStockless">Mostrar sólo productos sin stock</label>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
@@ -76,7 +78,7 @@
                     <h2 class="card-title mr-2">Productos seleccionados</h2>
                     <hr />
                     @Html.LabelFor(x => x.CreateViewModel.Comment, new { @class = "control-label" })
-                    @Html.TextAreaFor(x => x.CreateViewModel.Comment, new { @class = "form-control", @rows = 3 })
+                    @Html.TextAreaFor(x => x.CreateViewModel.Comment, new { @class = "form-control", @rows = 3, @id = "orderComment" })
                     <div class="table-responsive m-t-10">
                         <table id="productsSelected" class="table table-bordered table-striped">
                             <thead>
@@ -103,6 +105,7 @@
 
         <form id="form-create" method="POST" asp-area="" asp-controller="Orders" asp-action="Create">
             @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.CreateViewModel.Comment)
         </form>
     </div>
 </div>
@@ -147,6 +150,30 @@
 
     let productsData;
 
+    document.getElementById('showStocklessLabel').onclick = handleCheckChange;
+    function handleCheckChange(e) {
+        e.preventDefault();
+        const checkbox = document.getElementById("showStockless");
+        const isChecked = checkbox.getAttribute("checked");
+        if (isChecked) {
+            checkbox.removeAttribute("checked");
+        } else {
+            checkbox.setAttribute("checked", "true");
+        }
+
+        const showStockless = checkbox.checked;
+        const table = $("#DataTable").DataTable();
+        table.rows().every(function () {
+            let row = $(this.node());
+            let stock = row.find("td:nth-child(5)").text();
+            if (showStockless && stock != 0) {
+                row.hide();
+            } else {
+                row.show();
+            }
+        });
+    };
+
     $("#btnSend").on("click", function () {
         $("#productsSelected").DataTable().rows().every(function () {
             let row = $(this.node());
@@ -172,6 +199,10 @@
     function sendForm(amount) {
         createProductsData();
         let form = $("#form-create");
+        const comment = $("#orderComment").val();
+        if (comment.length > 0) {
+            $("#CreateViewModel_Comment").val(comment);
+        }
         // Enviar solicitud AJAX
         $.ajax({
             url: $(form).attr('action'), // Utiliza la ruta del formulario

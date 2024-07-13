@@ -38,6 +38,7 @@
                         <h4 class="card-title mr-2 mb-2">10 productos más vendidos</h4>
                         @Html.DropDownList("mostSoldProductsYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
                         <select id="mostSoldProductsMonth" class="form-control mb-2" style="max-width: fit-content">
+                            <option value="">Todo el año</option>
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
                             <option value="3">Marzo</option>
@@ -66,6 +67,7 @@
                         <h4 class="card-title mr-2 mb-2">10 productos más pedidos</h4>
                         @Html.DropDownList("mostOrderedProductsYear", Model.Years, new { @class = "form-control mb-2", @style = "max-width: fit-content" })
                         <select id="mostOrderedProductsMonth" class="form-control mb-2" style="max-width: fit-content">
+                            <option value="">Todo el año</option>
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
                             <option value="3">Marzo</option>
